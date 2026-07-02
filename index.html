@@ -1,300 +1,288 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Registro Inspección Mensual - GENERADORES ACCESS</title>
-    <!-- Librería html2pdf para la conversión a PDF directamente en el navegador -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        :root { 
-            --bg: #f8fafc; 
-            --card: #ffffff; 
-            --accent: #1e40af; 
-            --text: #0f172a; 
-            --gray-light: #f1f5f9;
-        }
-        *, *::before, *::after { box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            padding: 15px; 
-            margin: 0; 
-        }
-        .container { max-width: 500px; margin: auto; transition: max-width 0.2s; }
-        .card { 
-            background: var(--card); 
-            padding: 25px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            border: 1px solid #e2e8f0; 
-        }
-        h2 { 
-            font-size: 1.3rem; 
-            color: var(--accent); 
-            margin-top: 0; 
-            border-bottom: 2px solid #e2e8f0; 
-            padding-bottom: 10px; 
-            text-align: center; 
-        }
-        label { 
-            display: block; 
-            margin-top: 18px; 
-            font-weight: 700; 
-            font-size: 0.9rem; 
-            color: #475569; 
-        }
-        input, select, textarea { 
-            width: 100%; 
-            padding: 12px; 
-            margin-top: 6px; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 8px; 
-            font-size: 16px; 
-            background-color: #fff;
-        }
-        .tecnico-block { 
-            background: var(--gray-light); 
-            padding: 12px; 
-            border-radius: 10px; 
-            margin-top: 8px; 
-            border: 1px solid #e2e8f0; 
-        }
-        .btn-add { 
-            background: #e2e8f0; 
-            color: var(--accent); 
-            border: none; 
-            padding: 10px; 
-            border-radius: 6px; 
-            font-weight: bold; 
-            width: 100%; 
-            cursor: pointer; 
-            margin-top: 10px; 
-        }
-        .eval-container { display: flex; justify-content: space-between; gap: 4px; margin-top: 8px; }
-        .eval-btn { 
-            flex: 1; 
-            padding: 12px 0; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 6px; 
-            background: white; 
-            cursor: pointer; 
-            font-weight: bold; 
-            text-align: center; 
-            transition: all 0.2s; 
-        }
-        .eval-btn.selected { background: var(--accent); color: white; border-color: var(--accent); }
-        .btn-submit { 
-            background: var(--accent); 
-            color: white; 
-            border: none; 
-            padding: 18px; 
-            border-radius: 10px; 
-            width: 100%; 
-            font-size: 1rem; 
-            font-weight: bold; 
-            margin-top: 30px; 
-            cursor: pointer; 
-        }
-        .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
 
-        .pdf-only { display: none; }
-        
-        /* Clase auxiliar que se activa por código justo antes de generar el PDF */
-        .pdf-modo-horizontal {
-            max-width: 850px !important;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Evaluación de Proveedores - ACCESS</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+body{
+background:#f2f5f9;
+padding:30px;
+}
+
+.container{
+
+max-width:900px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,.15);
+
+}
+
+h1{
+
+text-align:center;
+color:#003b6d;
+margin-bottom:10px;
+
+}
+
+h2{
+
+margin-top:25px;
+color:#003b6d;
+border-bottom:2px solid #0b6efd;
+padding-bottom:5px;
+
+}
+
+.row{
+
+display:flex;
+gap:15px;
+margin-top:15px;
+flex-wrap:wrap;
+
+}
+
+.col{
+
+flex:1;
+min-width:250px;
+
+}
+
+label{
+
+display:block;
+font-weight:600;
+margin-bottom:5px;
+
+}
+
+input,select,textarea{
+
+width:100%;
+padding:10px;
+border:1px solid #ccc;
+border-radius:8px;
+
+}
+
+textarea{
+
+height:120px;
+resize:none;
+
+}
+
+.question{
+
+margin-top:20px;
+padding:15px;
+background:#f8f9fa;
+border-radius:8px;
+
+}
+
+.rating{
+
+display:flex;
+justify-content:space-between;
+margin-top:10px;
+
+}
+
+.rating label{
+
+display:flex;
+flex-direction:column;
+align-items:center;
+font-weight:normal;
+
+}
+
+canvas{
+
+border:2px solid #333;
+border-radius:8px;
+width:100%;
+height:220px;
+
+}
+
+button{
+
+margin-top:30px;
+width:100%;
+padding:18px;
+background:#0b6efd;
+color:white;
+font-size:18px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#084298;
+
+}
+
+#resultado{
+
+margin-top:25px;
+padding:15px;
+background:#eef4ff;
+border-radius:10px;
+font-size:20px;
+font-weight:bold;
+text-align:center;
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-<div class="container" id="mainContainer">
-    <div class="card" id="form-pdf-area">
-        <h2>Registro Inspección Mensual<br><span style="font-size: 1.1rem; color: #475569;">GENERADORES ACCESS</span></h2>
-        <form id="mainForm">
-            <label>Fecha de Mantención</label>
-            <input type="date" id="fecha" required>
+<div class="container">
 
-            <label>Proveedor</label>
-            <select id="proveedor" required>
-                <option value="">Seleccione...</option>
-                <option value="ALEJANDRO LABRA">ALEJANDRO LABRA</option>
-                <option value="ARIRIMAQ">ARIRIMAQ</option>
-                <option value="BASH">BASH</option>
-                <option value="BOMBEROS">BOMBEROS</option>
-                <option value="BOSQUE ALTO JARDINES">BOSQUE ALTO JARDINES</option>
-                <option value="CASTILLO Y CARRANZA">CASTILLO Y CARRANZA</option>
-                <option value="CHILEMPACK">CHILEMPACK</option>
-                <option value="CIVIL WORKS">CIVIL WORKS</option>
-                <option value="CJ SISTEMA">CJ SISTEMA</option>
-                <option value="CLAUDIO MUÑOZ">CLAUDIO MUÑOZ</option>
-                <option value="DANSEG">DANSEG</option>
-                <option value="DONNAIRE">DONNAIRE</option>
-                <option value="ECOCAPACITA">ECOCAPACITA</option>
-                <option value="ELEMONT">ELEMONT</option>
-                <option value="EMMEG">EMMEG</option>
-                <option value="ENTRE RADIOS">ENTRE RADIOS</option>
-                <option value="FERREL">FERREL</option>
-                <option value="HAKEN">HAKEN</option>
-                <option value="INGERACK">INGERACK</option>
-                <option value="KRAF TEA">KRAF TEA</option>
-                <option value="LUREYE">LUREYE</option>
-                <option value="MAGNA IV">MAGNA IV</option>
-                <option value="PC PARTNERS">PC PARTNERS</option>
-                <option value="RENE LOPEZ">RENE LOPEZ</option>
-                <option value="RENTAS EL RETIRO">RENTAS EL RETIRO</option>
-                <option value="SERVELEV">SERVELEV</option>
-                <option value="SIS SEGURIDAD">SIS SEGURIDAD</option>
-                <option value="TEK">TEK</option>
-                <option value="TEKNICALL">TEKNICALL</option>
-                <option value="THUNDER">THUNDER</option>
-                <option value="TIRREAU">TIRREAU</option>
-                <option value="TRIPLEZETA">TRIPLEZETA</option>
-                <option value="OTRO">OTRO / NUEVO</option>
-            </select>
+<h1>ACCESS</h1>
 
-            <label>Equipo / Maquinaria Intervenida</label>
-            <input type="text" id="equipo" placeholder="Ej: Generador Auxiliar Sala B" required>
+<h2>Registro Inspección Mensual - Evaluación de Proveedores</h2>
 
-            <label>Personal Técnico</label>
-            <div id="contenedorTecnicos">
-                <div class="tecnico-block">
-                    <input type="text" placeholder="Nombre Técnico Principal" class="t-nombre" required>
-                </div>
-            </div>
-            <button type="button" id="btnAddTecnico" class="btn-add">+ ACOMPAÑANTE (OPCIONAL)</button>
+<div class="row">
 
-            <div id="evaluacionBloque"></div>
+<div class="col">
 
-            <label>Comentarios / Observaciones</label>
-            <textarea id="comentarios" rows="3" placeholder="Detalles de la entrega, niveles de aceite, etc..."></textarea>
+<label>Fecha Mantención</label>
 
-            <label>Evaluador (Nombre Firma)</label>
-            <input type="text" id="firma" placeholder="Quién evalúa desde Access" required>
+<input type="date" id="fecha">
 
-            <button type="submit" class="btn-submit" id="submitBtn">GUARDAR Y GENERAR PDF</button>
-        </form>
-    </div>
+</div>
+
+<div class="col">
+
+<label>Proveedor</label>
+
+<select id="proveedor">
+
+<option>Seleccione...</option>
+
+<option>Generadores ACCESS</option>
+<option>SK Comercial</option>
+<option>Cummins</option>
+<option>Atlas Copco</option>
+<option>Otro</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="col">
+
+<label>Equipo / Maquinaria</label>
+
+<input id="equipo">
+
+</div>
+
+<div class="col">
+
+<label>Técnico Principal</label>
+
+<input id="tecnico">
+
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="col">
+
+<label>Acompañante (Opcional)</label>
+
+<input id="acompanante">
+
+</div>
+
+<div class="col">
+
+<label>Evaluador</label>
+
+<input id="evaluador">
+
+</div>
+
+</div>
+
+<h2>Evaluación</h2>
+<div class="question">
+
+<label>P1: Puntualidad</label>
+
+<div class="rating">
+
+<label><input type="radio" name="p1" value="1">1</label>
+<label><input type="radio" name="p1" value="2">2</label>
+<label><input type="radio" name="p1" value="3">3</label>
+<label><input type="radio" name="p1" value="4">4</label>
+<label><input type="radio" name="p1" value="5">5</label>
+<label><input type="radio" name="p1" value="6">6</label>
+<label><input type="radio" name="p1" value="7">7</label>
+
+</div>
+
+</div>
+<h2>Observaciones</h2>
+
+<textarea id="observaciones"></textarea>
+
+<h2>Firma del Evaluador</h2>
+
+<canvas id="firma"></canvas>
+
+<button onclick="limpiarFirma()">Limpiar Firma</button>
+
+<div id="resultado">
+
+Promedio: -
+
+</div>
+
+<button onclick="generarPDF()">
+
+GUARDAR Y GENERAR PDF
+
+</button>
+
 </div>
 
 <script>
-    // REEMPLAZAR AQUÍ: Pega tu URL /exec obtenida de Google Apps Script
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec"; 
-
-    document.getElementById('fecha').valueAsDate = new Date();
-
-    const preguntas = [
-        { id: 'p1', texto: 'P1: Puntualidad' },
-        { id: 'p2', texto: 'P2: Uso de EPP (Elementos de Protección Personal) completos' },
-        { id: 'p3', texto: 'P3: Disposición / Actitud del personal' },
-        { id: 'p4', texto: 'P4: Orden y limpieza de la zona de trabajo al retirar' },
-        { id: 'p5', texto: 'P5: Entrega de Informe / Certificado técnico' },
-        { id: 'p6', texto: 'P6: Calidad general del servicio' }
-    ];
-
-    const notas = {};
-    const container = document.getElementById('evaluacionBloque');
-
-    preguntas.forEach((preg) => {
-        const lbl = document.createElement('label');
-        lbl.innerText = preg.texto;
-        container.appendChild(lbl);
-
-        const group = document.createElement('div');
-        group.className = 'eval-container';
-
-        const hiddenInput = document.createElement('div');
-        hiddenInput.className = 'pdf-only';
-        hiddenInput.id = 'print-' + preg.id;
-        container.appendChild(hiddenInput);
-
-        for(let i = 1; i <= 7; i++) {
-            const b = document.createElement('div');
-            b.className = 'eval-btn';
-            b.innerText = i;
-            b.onclick = () => {
-                Array.from(group.children).forEach(x => x.classList.remove('selected'));
-                b.classList.add('selected');
-                notas[preg.id] = i;
-                hiddenInput.innerText = "Nota asignada: " + i;
-            };
-            group.appendChild(b);
-        }
-        container.appendChild(group);
-    });
-
-    document.getElementById('btnAddTecnico').onclick = function() {
-        const bloquesActuales = document.querySelectorAll('.tecnico-block').length;
-        if(bloquesActuales < 2) {
-            const d = document.createElement('div');
-            d.className = 'tecnico-block';
-            d.innerHTML = `<input type="text" placeholder="Nombre Técnico Acompañante" class="t-nombre" required>`;
-            document.getElementById('contenedorTecnicos').appendChild(d);
-            this.style.display = "none";
-        }
-    };
-
-    document.getElementById('mainForm').onsubmit = async (e) => {
-        e.preventDefault();
-
-        if(Object.keys(notas).length < 6) {
-            return alert("Por favor, califica los 6 puntos antes de guardar.");
-        }
-
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = true;
-        btn.innerText = "PROCESANDO...";
-
-        const inputsTecnicos = Array.from(document.querySelectorAll('.t-nombre'));
-        const provSeleccionado = document.getElementById('proveedor').value;
-        const fechaInspec = document.getElementById('fecha').value;
-        
-        const payload = {
-            fecha: fechaInspec,
-            proveedor: provSeleccionado,
-            equipo: document.getElementById('equipo').value,
-            tecnico1: inputsTecnicos[0] ? inputsTecnicos[0].value : "",
-            tecnico2: inputsTecnicos[1] ? inputsTecnicos[1].value : "",
-            p1: notas.p1, p2: notas.p2, p3: notas.p3, p4: notas.p4, p5: notas.p5, p6: notas.p6,
-            comentarios: document.getElementById('comentarios').value,
-            firma: document.getElementById('firma').value
-        };
-
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-        } catch (err) {
-            console.error("Error al respaldar en la nube:", err);
-        }
-
-        // --- AJUSTE ESTRATÉGICO PARA MODO HORIZONTAL ---
-        const contPrincipal = document.getElementById('mainContainer');
-        contPrincipal.classList.add('pdf-modo-horizontal');
-
-        const elementoAEvaluar = document.getElementById('form-pdf-area');
-        const OpcionesPDF = {
-            margin:       10,
-            filename:     `Inspeccion_Generadores_${provSeleccionado}_${fechaInspec}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-        };
-
-        document.getElementById('btnAddTecnico').style.display = "none";
-        btn.style.display = "none";
-
-        // Genera el archivo y reestablece la interfaz
-        html2pdf().set(OpcionesPDF).from(elementoAEvaluar).save().then(() => {
-            contPrincipal.classList.remove('pdf-modo-horizontal');
-            alert("✅ Registro guardado en base unificada y PDF generado exitosamente.");
-            location.reload();
-        });
-    };
-</script>
-</body>
-</html>
