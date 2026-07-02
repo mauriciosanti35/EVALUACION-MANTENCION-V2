@@ -273,7 +273,6 @@
         }
 
         // --- AJUSTE ESTRATÉGICO PARA MODO HORIZONTAL ---
-        // Forzamos al contenedor a expandirse horizontalmente para la captura del PDF
         const contPrincipal = document.getElementById('mainContainer');
         contPrincipal.classList.add('pdf-modo-horizontal');
 
@@ -283,7 +282,7 @@
             filename:     `Inspeccion_Generadores_${provSeleccionado}_${fechaInspec}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } // <- Orientación Horizontal
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
         };
 
         document.getElementById('btnAddTecnico').style.display = "none";
