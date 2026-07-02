@@ -175,43 +175,8 @@
             <input type="date" id="fecha">
         </div>
         <div class="col">
-            <label for="proveedor">Proveedor</label>
-            <select id="proveedor">
-                <option value="">Seleccione...</option>
-                <option value="ALEJANDRO LABRA">ALEJANDRO LABRA</option>
-                <option value="ARIRIMAQ">ARIRIMAQ</option>
-                <option value="BASH">BASH</option>
-                <option value="BOMBEROS">BOMBEROS</option>
-                <option value="BOSQUE ALTO JARDINES">BOSQUE ALTO JARDINES</option>
-                <option value="CASTILLO Y CARRANZA">CASTILLO Y CARRANZA</option>
-                <option value="CHILEMPACK">CHILEMPACK</option>
-                <option value="CIVIL WORKS">CIVIL WORKS</option>
-                <option value="CJ SISTEMA">CJ SISTEMA</option>
-                <option value="CLAUDIO MUÑOZ">CLAUDIO MUÑOZ</option>
-                <option value="DANSEG">DANSEG</option>
-                <option value="DONNAIRE">DONNAIRE</option>
-                <option value="ECOCAPACITA">ECOCAPACITA</option>
-                <option value="ELEMONT">ELEMONT</option>
-                <option value="EMMEG">EMMEG</option>
-                <option value="ENTRE RADIOS">ENTRE RADIOS</option>
-                <option value="FERREL">FERREL</option>
-                <option value="HAKEN">HAKEN</option>
-                <option value="INGERACK">INGERACK</option>
-                <option value="KRAF TEA">KRAF TEA</option>
-                <option value="LUREYE">LUREYE</option>
-                <option value="MAGNA IV">MAGNA IV</option>
-                <option value="PC PARTNERS">PC PARTNERS</option>
-                <option value="RENE LOPEZ">RENE LOPEZ</option>
-                <option value="RENTAS EL RETIRO">RENTAS EL RETIRO</option>
-                <option value="SERVELEV">SERVELEV</option>
-                <option value="SIS SEGURIDAD">SIS SEGURIDAD</option>
-                <option value="TEK">TEK</option>
-                <option value="TEKNICALL">TEKNICALL</option>
-                <option value="THUNDER">THUNDER</option>
-                <option value="TIRREAU">TIRREAU</option>
-                <option value="TRIPLEZETA">TRIPLEZETA</option>
-                <option value="Otro">Otro</option>
-            </select>
+            <label for="proveedor">Proveedor (Ingreso Manual)</label>
+            <input type="text" id="proveedor" placeholder="Escriba el nombre del proveedor...">
         </div>
     </div>
 
@@ -322,6 +287,10 @@
     <textarea id="observaciones" placeholder="Escriba aquí comentarios adicionales..."></textarea>
 
     <h2>Firma del Evaluador</h2>
+    <div style="margin-top: 15px;">
+        <label for="nombreFirma">Nombre de quien firma (Manual)</label>
+        <input type="text" id="nombreFirma" placeholder="Escriba su nombre completo para la firma...">
+    </div>
     <canvas id="firma"></canvas>
     <button type="button" class="btn-clear" onclick="limpiarFirma()">Limpiar Firma</button>
 
@@ -391,11 +360,12 @@
         const doc = new jsPDF();
 
         const fecha = document.getElementById('fecha').value || 'No especificada';
-        const proveedor = document.getElementById('proveedor').value || 'No seleccionado';
+        const proveedor = document.getElementById('proveedor').value || 'No especificado';
         const equipo = document.getElementById('equipo').value || 'N/A';
         const tecnico = document.getElementById('tecnico').value || 'N/A';
         const evaluador = document.getElementById('evaluador').value || 'N/A';
         const observaciones = document.getElementById('observaciones').value || 'Sin observaciones adicionales.';
+        const nombreFirma = document.getElementById('nombreFirma').value || 'No especificado';
 
         // Título del Documento
         doc.setFont("Helvetica", "bold");
@@ -442,15 +412,17 @@
         doc.setFont("Helvetica", "normal");
         doc.text(observaciones, 14, yRow + 26, { maxWidth: 180 });
 
-        // Adjuntar firma como imagen PNG si el canvas no está vacío
+        // Nombre de la firma y Firma gráfica
+        doc.setFont("Helvetica", "bold");
+        doc.text(`Nombre Firma: ${nombreFirma}`, 14, yRow + 50);
+
         if (!signaturePad.isEmpty()) {
             const imgData = signaturePad.toDataURL('image/png');
-            doc.setFont("Helvetica", "bold");
-            doc.text("Firma de Conformidad:", 14, yRow + 50);
-            doc.addImage(imgData, 'PNG', 14, yRow + 56, 60, 25);
+            doc.text("Firma de Conformidad:", 14, yRow + 58);
+            doc.addImage(imgData, 'PNG', 14, yRow + 64, 60, 25);
         }
 
-        // Descarga automatizada reemplazando espacios para el nombre del archivo
+        // Descarga automatizada
         const nombreArchivo = proveedor.replace(/\s+/g, '_');
         doc.save(`Evaluacion_${nombreArchivo}_${fecha}.pdf`);
     }
