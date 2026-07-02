@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Evaluación de Proveedores - Access</title>
+    <title>Registro Inspección Mensual - GENERADORES ACCESS</title>
+    <!-- Librería html2pdf para la conversión a PDF directamente en el navegador -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root { 
             --bg: #f8fafc; 
@@ -29,7 +31,7 @@
             border: 1px solid #e2e8f0; 
         }
         h2 { 
-            font-size: 1.4rem; 
+            font-size: 1.3rem; 
             color: var(--accent); 
             margin-top: 0; 
             border-bottom: 2px solid #e2e8f0; 
@@ -96,13 +98,20 @@
             cursor: pointer; 
         }
         .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        /* Estilos optimizados exclusivos para cuando se imprima o guarde el PDF */
+        .pdf-only { display: none; }
+        @media print {
+            .pdf-only { display: block; margin-top: 15px; font-weight: bold; color: #1e40af; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <h2>Evaluación de Proveedores</h2>
+    <!-- El id="form-pdf-area" encierra todo lo que se va a retratar en el documento PDF -->
+    <div class="card" id="form-pdf-area">
+        <h2>Registro Inspección Mensual<br><span style="font-size: 1.1rem; color: #475569;">GENERADORES ACCESS</span></h2>
         <form id="mainForm">
             <label>Fecha de Mantención</label>
             <input type="date" id="fecha" required>
@@ -146,7 +155,7 @@
             </select>
 
             <label>Equipo / Maquinaria Intervenida</label>
-            <input type="text" id="equipo" placeholder="Ej: Ascensor Central / Apilador" required>
+            <input type="text" id="equipo" placeholder="Ej: Generador Auxiliar Sala B" required>
 
             <label>Personal Técnico</label>
             <div id="contenedorTecnicos">
@@ -159,24 +168,22 @@
             <div id="evaluacionBloque"></div>
 
             <label>Comentarios / Observaciones</label>
-            <textarea id="comentarios" rows="3" placeholder="Detalles de la entrega, pendientes, etc..."></textarea>
+            <textarea id="comentarios" rows="3" placeholder="Detalles de la entrega, niveles de aceite, etc..."></textarea>
 
             <label>Evaluador (Nombre Firma)</label>
             <input type="text" id="firma" placeholder="Quién evalúa desde Access" required>
 
-            <button type="submit" class="btn-submit" id="submitBtn">GUARDAR EN RESPALDO</button>
+            <button type="submit" class="btn-submit" id="submitBtn">GUARDAR Y GENERAR PDF</button>
         </form>
     </div>
 </div>
 
 <script>
-    // REEMPLAZAR AQUÍ la URL obtenida al desplegar el Script de Google Sheets
+    // Tu URL de Google Apps Script 
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec"; 
 
-    // Establecer fecha por defecto (hoy)
     document.getElementById('fecha').valueAsDate = new Date();
 
-    // Estructura de las 6 dimensiones acordadas
     const preguntas = [
         { id: 'p1', texto: 'P1: Puntualidad y asistencia' },
         { id: 'p2', texto: 'P2: Uso de EPP completos' },
@@ -189,7 +196,6 @@
     const notas = {};
     const container = document.getElementById('evaluacionBloque');
 
-    // Construcción de botones de nota 1 a 7 de forma limpia
     preguntas.forEach((preg) => {
         const lbl = document.createElement('label');
         lbl.innerText = preg.texto;
@@ -197,6 +203,12 @@
 
         const group = document.createElement('div');
         group.className = 'eval-container';
+
+        // Creamos un input oculto para que html2pdf pueda capturar la nota en el PDF final
+        const hiddenInput = document.createElement('div');
+        hiddenInput.className = 'pdf-only';
+        hiddenInput.id = 'print-' + preg.id;
+        container.appendChild(hiddenInput);
 
         for(let i = 1; i <= 7; i++) {
             const b = document.createElement('div');
@@ -206,13 +218,13 @@
                 Array.from(group.children).forEach(x => x.classList.remove('selected'));
                 b.classList.add('selected');
                 notas[preg.id] = i;
+                hiddenInput.innerText = "Nota asignada: " + i; // Se refleja en el clon de impresión
             };
             group.appendChild(b);
         }
         container.appendChild(group);
     });
 
-    // Permitir agregar un técnico acompañante de manera ordenada
     document.getElementById('btnAddTecnico').onclick = function() {
         const bloquesActuales = document.querySelectorAll('.tecnico-block').length;
         if(bloquesActuales < 2) {
@@ -220,11 +232,10 @@
             d.className = 'tecnico-block';
             d.innerHTML = `<input type="text" placeholder="Nombre Técnico Acompañante" class="t-nombre" required>`;
             document.getElementById('contenedorTecnicos').appendChild(d);
-            this.style.display = "none"; // Ocultar botón tras agregar el segundo
+            this.style.display = "none";
         }
     };
 
-    // Envío y almacenamiento centralizado
     document.getElementById('mainForm').onsubmit = async (e) => {
         e.preventDefault();
 
@@ -234,26 +245,24 @@
 
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
-        btn.innerText = "GUARDANDO EN EXCEL...";
+        btn.innerText = "PROCESANDO...";
 
         const inputsTecnicos = Array.from(document.querySelectorAll('.t-nombre'));
+        const provSeleccionado = document.getElementById('proveedor').value;
+        const fechaInspec = document.getElementById('fecha').value;
         
         const payload = {
-            fecha: document.getElementById('fecha').value,
-            proveedor: document.getElementById('proveedor').value,
+            fecha: fechaInspec,
+            proveedor: provSeleccionado,
             equipo: document.getElementById('equipo').value,
             tecnico1: inputsTecnicos[0] ? inputsTecnicos[0].value : "",
             tecnico2: inputsTecnicos[1] ? inputsTecnicos[1].value : "",
-            p1: notas.p1,
-            p2: notas.p2,
-            p3: notas.p3,
-            p4: notas.p4,
-            p5: notas.p5,
-            p6: notas.p6,
+            p1: notas.p1, p2: notas.p2, p3: notas.p3, p4: notas.p4, p5: notas.p5, p6: notas.p6,
             comentarios: document.getElementById('comentarios').value,
             firma: document.getElementById('firma').value
         };
 
+        // 1. ENVÍO DE DATOS A GOOGLE SHEETS
         try {
             await fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -261,15 +270,28 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
-            alert("✅ Registro guardado con éxito en el Excel unificado.");
-            location.reload();
         } catch (err) {
-            console.error(err);
-            alert("Error de conexión al guardar el respaldo.");
-            btn.disabled = false;
-            btn.innerText = "GUARDAR EN RESPALDO";
+            console.error("Error al respaldar en la nube:", err);
         }
+
+        // 2. GENERACIÓN AUTOMÁTICA DEL PDF DE RESPALDO LOCAL
+        const elementoAEvaluar = document.getElementById('form-pdf-area');
+        const OpcionesPDF = {
+            margin:       10,
+            filename:     `Inspeccion_Generadores_${provSeleccionado}_${fechaInspec}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Ocultamos temporalmente los botones de control para que no salgan feos en el PDF
+        document.getElementById('btnAddTecnico').style.display = "none";
+        btn.style.display = "none";
+
+        html2pdf().set(OpcionesPDF).from(elementoAEvaluar).save().then(() => {
+            alert("✅ Registro guardado en base unificada y PDF generado exitosamente.");
+            location.reload();
+        });
     };
 </script>
 </body>
