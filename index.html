@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación de Proveedores - ACCESS</title>
     
-    <!-- Fuentes y Librerías Externas -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
@@ -168,7 +167,6 @@
     <h1>ACCESS</h1>
     <h2>Registro Inspección Mensual - Evaluación de Proveedores</h2>
 
-    <!-- Datos de cabecera -->
     <div class="row">
         <div class="col">
             <label for="fecha">Fecha Mantención</label>
@@ -204,7 +202,6 @@
 
     <h2>Evaluación</h2>
 
-    <!-- Cuestionario con escala 1 a 7 por ítem -->
     <div class="question">
         <div class="question-title">P1: Puntualidad</div>
         <div class="rating">
@@ -287,7 +284,7 @@
     <textarea id="observaciones" placeholder="Escriba aquí comentarios adicionales..."></textarea>
 
     <h2>Firma del Evaluador</h2>
-    <div style="margin-top: 15px;">
+    <div style="margin-top: 15px; margin-bottom: 5px;">
         <label for="nombreFirma">Nombre de quien firma (Manual)</label>
         <input type="text" id="nombreFirma" placeholder="Escriba su nombre completo para la firma...">
     </div>
@@ -316,7 +313,10 @@
         const ratio = Math.max(window.devicePixelRatio || 1, 1);
         canvas.width = canvas.offsetWidth * ratio;
         canvas.height = canvas.offsetHeight * ratio;
-        canvas.getContext("2d").scale(ratio, ratio);
+        const context = canvas.getContext("2d");
+        if (context) {
+            context.scale(ratio, ratio);
+        }
         signaturePad.clear();
     }
     
@@ -340,17 +340,19 @@
         for (let i = 1; i <= 6; i++) {
             const seleccionada = document.querySelector(`input[name="p${i}"]:checked`);
             if (seleccionada) {
-                suma += parseInt(seleccionada.value);
+                suma += parseInt(seleccionada.value, 10);
                 contadas++;
             }
         }
 
         const resultadoDiv = document.getElementById('resultado');
-        if (contadas > 0) {
-            const promedio = (suma / contadas).toFixed(1);
-            resultadoDiv.innerText = `Promedio: ${promedio}`;
-        } else {
-            resultadoDiv.innerText = "Promedio: -";
+        if (resultadoDiv) {
+            if (contadas > 0) {
+                const promedio = (suma / contadas).toFixed(1);
+                resultadoDiv.innerText = `Promedio: ${promedio}`;
+            } else {
+                resultadoDiv.innerText = "Promedio: -";
+            }
         }
     }
 
@@ -397,13 +399,15 @@
         ];
 
         preguntasTexto.forEach((texto, index) => {
-            const nota = document.querySelector(`input[name="p${index + 1}"]:checked`)?.value || 'No evaluado';
+            const radioSel = document.querySelector(`input[name="p${index + 1}"]:checked`);
+            const nota = radioSel ? radioSel.value : 'No evaluado';
             doc.text(`${texto}: ${nota}`, 14, yRow);
             yRow += 8;
         });
 
         // Promedio Global
-        const textoPromedio = document.getElementById('resultado').innerText;
+        const resultadoDiv = document.getElementById('resultado');
+        const textoPromedio = resultadoDiv ? resultadoDiv.innerText : 'Promedio: -';
         doc.setFont("Helvetica", "bold");
         doc.text(`Cierre de Evaluación -> ${textoPromedio}`, 14, yRow + 6);
 
