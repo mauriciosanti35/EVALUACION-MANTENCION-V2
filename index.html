@@ -22,7 +22,7 @@
             padding: 15px; 
             margin: 0; 
         }
-        .container { max-width: 500px; margin: auto; }
+        .container { max-width: 500px; margin: auto; transition: max-width 0.2s; }
         .card { 
             background: var(--card); 
             padding: 25px; 
@@ -100,14 +100,16 @@
         .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
 
         .pdf-only { display: none; }
-        @media print {
-            .pdf-only { display: block; margin-top: 15px; font-weight: bold; color: #1e40af; }
+        
+        /* Clase auxiliar que se activa por código justo antes de generar el PDF */
+        .pdf-modo-horizontal {
+            max-width: 850px !important;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="mainContainer">
     <div class="card" id="form-pdf-area">
         <h2>Registro Inspección Mensual<br><span style="font-size: 1.1rem; color: #475569;">GENERADORES ACCESS</span></h2>
         <form id="mainForm">
@@ -177,12 +179,11 @@
 </div>
 
 <script>
-    // REEMPLAZAR AQUÍ: Pega tu nueva URL /exec obtenida de Google Apps Script
+    // REEMPLAZAR AQUÍ: Pega tu URL /exec obtenida de Google Apps Script
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec"; 
 
     document.getElementById('fecha').valueAsDate = new Date();
 
-    // Textos actualizados según requerimiento
     const preguntas = [
         { id: 'p1', texto: 'P1: Puntualidad' },
         { id: 'p2', texto: 'P2: Uso de EPP (Elementos de Protección Personal) completos' },
@@ -271,19 +272,26 @@
             console.error("Error al respaldar en la nube:", err);
         }
 
+        // --- AJUSTE ESTRATÉGICO PARA MODO HORIZONTAL ---
+        // Forzamos al contenedor a expandirse horizontalmente para la captura del PDF
+        const contPrincipal = document.getElementById('mainContainer');
+        contPrincipal.classList.add('pdf-modo-horizontal');
+
         const elementoAEvaluar = document.getElementById('form-pdf-area');
         const OpcionesPDF = {
             margin:       10,
             filename:     `Inspeccion_Generadores_${provSeleccionado}_${fechaInspec}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } // <- Orientación Horizontal
         };
 
         document.getElementById('btnAddTecnico').style.display = "none";
         btn.style.display = "none";
 
+        // Genera el archivo y reestablece la interfaz
         html2pdf().set(OpcionesPDF).from(elementoAEvaluar).save().then(() => {
+            contPrincipal.classList.remove('pdf-modo-horizontal');
             alert("✅ Registro guardado en base unificada y PDF generado exitosamente.");
             location.reload();
         });
