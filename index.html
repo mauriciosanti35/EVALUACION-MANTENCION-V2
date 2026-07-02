@@ -178,10 +178,38 @@
             <label for="proveedor">Proveedor</label>
             <select id="proveedor">
                 <option value="">Seleccione...</option>
-                <option value="Generadores ACCESS">Generadores ACCESS</option>
-                <option value="SK Comercial">SK Comercial</option>
-                <option value="Cummins">Cummins</option>
-                <option value="Atlas Copco">Atlas Copco</option>
+                <option value="ALEJANDRO LABRA">ALEJANDRO LABRA</option>
+                <option value="ARIRIMAQ">ARIRIMAQ</option>
+                <option value="BASH">BASH</option>
+                <option value="BOMBEROS">BOMBEROS</option>
+                <option value="BOSQUE ALTO JARDINES">BOSQUE ALTO JARDINES</option>
+                <option value="CASTILLO Y CARRANZA">CASTILLO Y CARRANZA</option>
+                <option value="CHILEMPACK">CHILEMPACK</option>
+                <option value="CIVIL WORKS">CIVIL WORKS</option>
+                <option value="CJ SISTEMA">CJ SISTEMA</option>
+                <option value="CLAUDIO MUÑOZ">CLAUDIO MUÑOZ</option>
+                <option value="DANSEG">DANSEG</option>
+                <option value="DONNAIRE">DONNAIRE</option>
+                <option value="ECOCAPACITA">ECOCAPACITA</option>
+                <option value="ELEMONT">ELEMONT</option>
+                <option value="EMMEG">EMMEG</option>
+                <option value="ENTRE RADIOS">ENTRE RADIOS</option>
+                <option value="FERREL">FERREL</option>
+                <option value="HAKEN">HAKEN</option>
+                <option value="INGERACK">INGERACK</option>
+                <option value="KRAF TEA">KRAF TEA</option>
+                <option value="LUREYE">LUREYE</option>
+                <option value="MAGNA IV">MAGNA IV</option>
+                <option value="PC PARTNERS">PC PARTNERS</option>
+                <option value="RENE LOPEZ">RENE LOPEZ</option>
+                <option value="RENTAS EL RETIRO">RENTAS EL RETIRO</option>
+                <option value="SERVELEV">SERVELEV</option>
+                <option value="SIS SEGURIDAD">SIS SEGURIDAD</option>
+                <option value="TEK">TEK</option>
+                <option value="TEKNICALL">TEKNICALL</option>
+                <option value="THUNDER">THUNDER</option>
+                <option value="TIRREAU">TIRREAU</option>
+                <option value="TRIPLEZETA">TRIPLEZETA</option>
                 <option value="Otro">Otro</option>
             </select>
         </div>
@@ -422,8 +450,9 @@
             doc.addImage(imgData, 'PNG', 14, yRow + 56, 60, 25);
         }
 
-        // Descarga automatizada
-        doc.save(`Evaluacion_${proveedor.replace(/\s+/g, '_')}_${fecha}.pdf`);
+        // Descarga automatizada reemplazando espacios para el nombre del archivo
+        const nombreArchivo = proveedor.replace(/\s+/g, '_');
+        doc.save(`Evaluacion_${nombreArchivo}_${fecha}.pdf`);
     }
 </script>
 
