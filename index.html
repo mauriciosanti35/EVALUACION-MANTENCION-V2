@@ -170,7 +170,7 @@
 </div>
 
 <script>
-    // REEMPLAZAR AQUÍ la URL obtenida al desplegar el Script de Google Sheets (Paso 2)
+    // REEMPLAZAR AQUÍ la URL obtenida al desplegar el Script de Google Sheets
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec"; 
 
     // Establecer fecha por defecto (hoy)
@@ -214,8 +214,8 @@
 
     // Permitir agregar un técnico acompañante de manera ordenada
     document.getElementById('btnAddTecnico').onclick = function() {
-        const bloques actuales = document.querySelectorAll('.tecnico-block').length;
-        if(bloques_actuales < 2) {
+        const bloquesActuales = document.querySelectorAll('.tecnico-block').length;
+        if(bloquesActuales < 2) {
             const d = document.createElement('div');
             d.className = 'tecnico-block';
             d.innerHTML = `<input type="text" placeholder="Nombre Técnico Acompañante" class="t-nombre" required>`;
@@ -243,7 +243,7 @@
             proveedor: document.getElementById('proveedor').value,
             equipo: document.getElementById('equipo').value,
             tecnico1: inputsTecnicos[0] ? inputsTecnicos[0].value : "",
-            tecnico2: inputsTecnicos[1] ? inputsTecnicos[1].value : "", // Pasa limpio a su propia columna
+            tecnico2: inputsTecnicos[1] ? inputsTecnicos[1].value : "",
             p1: notas.p1,
             p2: notas.p2,
             p3: notas.p3,
