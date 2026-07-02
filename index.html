@@ -177,18 +177,19 @@
 </div>
 
 <script>
-    // REEMPLAZAR AQUÍ: Pega tu nueva URL /exec obtenida tras solucionar el bloqueo en Google
+    // REEMPLAZAR AQUÍ: Pega tu nueva URL /exec obtenida de Google Apps Script
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec"; 
 
     document.getElementById('fecha').valueAsDate = new Date();
 
+    // Textos actualizados según requerimiento
     const preguntas = [
-        { id: 'p1', texto: 'P1: Puntualidad y asistencia' },
-        { id: 'p2', texto: 'P2: Uso de EPP completos' },
-        { id: 'p3', texto: 'P3: Disposición y actitud' },
-        { id: 'p4', texto: 'P4: Orden y limpieza del área' },
-        { id: 'p5', texto: 'P5: Entrega de Informe/Certificado' },
-        { id: 'p6', texto: 'P6: Calidad del servicio técnico' }
+        { id: 'p1', texto: 'P1: Puntualidad' },
+        { id: 'p2', texto: 'P2: Uso de EPP (Elementos de Protección Personal) completos' },
+        { id: 'p3', texto: 'P3: Disposición / Actitud del personal' },
+        { id: 'p4', texto: 'P4: Orden y limpieza de la zona de trabajo al retirar' },
+        { id: 'p5', texto: 'P5: Entrega de Informe / Certificado técnico' },
+        { id: 'p6', texto: 'P6: Calidad general del servicio' }
     ];
 
     const notas = {};
@@ -223,7 +224,7 @@
     });
 
     document.getElementById('btnAddTecnico').onclick = function() {
-        const名 bloquesActuales = document.querySelectorAll('.tecnico-block').length;
+        const bloquesActuales = document.querySelectorAll('.tecnico-block').length;
         if(bloquesActuales < 2) {
             const d = document.createElement('div');
             d.className = 'tecnico-block';
