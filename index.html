@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación de Proveedores - ACCESS</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2=family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
@@ -278,7 +278,6 @@
 </div>
 
 <script>
-    // 1. Controladores de eventos para calcular el promedio dinámico automáticamente
     const radios = document.querySelectorAll('input[type="radio"]');
     radios.forEach(radio => {
         radio.addEventListener('change', calcularPromedio);
@@ -307,39 +306,88 @@
         }
     }
 
-    // 2. Generación estructurada del archivo PDF usando jsPDF
     function generarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
+        // Variables de datos
         const fecha = document.getElementById('fecha').value || 'No especificada';
         const proveedor = document.getElementById('proveedor').value || 'No especificado';
         const equipo = document.getElementById('equipo').value || 'N/A';
         const tecnico = document.getElementById('tecnico').value || 'N/A';
+        const acompanante = document.getElementById('acompanante').value || 'N/A';
         const evaluador = document.getElementById('evaluador').value || 'N/A';
         const observaciones = document.getElementById('observaciones').value || 'Sin observaciones adicionales.';
         const nombreFirma = document.getElementById('nombreFirma').value || 'No especificado';
 
-        // Título del Documento
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(18);
-        doc.text("ACCESS - Registro de Inspección Mensual", 14, 20);
+        // --- ESTILOS Y COLORES ---
+        const cPrimario = [0, 59, 109];     // #003b6d
+        const cSecundario = [11, 110, 253]; // #0b6efd
+        const cGrisOscuro = [60, 60, 60];
+        const cGrisClaro = [240, 244, 248];
+
+        // --- ENCABEZADO ---
+        doc.setFillColor(...cPrimario);
+        doc.rect(0, 0, 210, 25, 'F'); // Banda azul superior
         
-        // Información General
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(14);
+        doc.text("ACCESS", 14, 16);
         doc.setFontSize(11);
         doc.setFont("Helvetica", "normal");
-        doc.text(`Fecha Mantención: ${fecha}`, 14, 32);
-        doc.text(`Proveedor Evaluado: ${proveedor}`, 14, 40);
-        doc.text(`Equipo / Maquinaria: ${equipo}`, 14, 48);
-        doc.text(`Técnico Principal: ${tecnico}`, 14, 56);
-        doc.text(`Evaluador del Servicio: ${evaluador}`, 14, 64);
+        doc.text("REGISTRO DE INSPECCIÓN MENSUAL", 210 - 14, 16, { align: "right" });
 
-        // Bloque de Calificaciones
+        // Título del Reporte
+        doc.setTextColor(...cPrimario);
         doc.setFont("Helvetica", "bold");
-        doc.text("Puntajes por Criterio (Escala 1 - 7):", 14, 76);
-        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(16);
+        doc.text("EVALUACIÓN DE PROVEEDORES", 14, 40);
 
-        let yRow = 84;
+        // --- BLOQUE 1: INFORMACIÓN GENERAL ---
+        doc.setDrawColor(...cSecundario);
+        doc.setLineWidth(0.5);
+        doc.line(14, 44, 196, 44); // Línea decorativa
+
+        doc.setFontSize(10);
+        doc.setTextColor(...cGrisOscuro);
+        
+        // Columna 1
+        doc.setFont("Helvetica", "bold"); doc.text("Fecha Mantención:", 14, 54);
+        doc.setFont("Helvetica", "normal"); doc.text(fecha, 50, 54);
+
+        doc.setFont("Helvetica", "bold"); doc.text("Proveedor Evaluado:", 14, 62);
+        doc.setFont("Helvetica", "normal"); doc.text(proveedor, 50, 62);
+
+        doc.setFont("Helvetica", "bold"); doc.text("Equipo / Maquinaria:", 14, 70);
+        doc.setFont("Helvetica", "normal"); doc.text(equipo, 50, 70);
+
+        // Columna 2
+        doc.setFont("Helvetica", "bold"); doc.text("Técnico Principal:", 110, 54);
+        doc.setFont("Helvetica", "normal"); doc.text(tecnico, 145, 54);
+
+        doc.setFont("Helvetica", "bold"); doc.text("Acompañante:", 110, 62);
+        doc.setFont("Helvetica", "normal"); doc.text(acompanante, 145, 62);
+
+        doc.setFont("Helvetica", "bold"); doc.text("Evaluador:", 110, 70);
+        doc.setFont("Helvetica", "normal"); doc.text(evaluador, 145, 70);
+
+        // --- BLOQUE 2: CALIFICACIONES (ESTILO TABLA) ---
+        doc.setTextColor(...cPrimario);
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text("Puntajes por Criterio (Escala 1 - 7)", 14, 85);
+
+        // Encabezados de Tabla
+        let yRow = 92;
+        doc.setFillColor(...cPrimario);
+        doc.rect(14, yRow, 182, 7, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.text("Criterio Evaluado", 18, yRow + 5);
+        doc.text("Nota", 180, yRow + 5, { align: "right" });
+        yRow += 7;
+
         const preguntasTexto = [
             "P1: Puntualidad",
             "P2: Uso de EPP",
@@ -349,31 +397,84 @@
             "P6: Calidad general del servicio"
         ];
 
+        doc.setTextColor(...cGrisOscuro);
         preguntasTexto.forEach((texto, index) => {
+            // Fondo alternado gris para legibilidad
+            if (index % 2 === 0) {
+                doc.setFillColor(...cGrisClaro);
+                doc.rect(14, yRow, 182, 8, 'F');
+            }
+            
             const radioSel = document.querySelector(`input[name="p${index + 1}"]:checked`);
             const nota = radioSel ? radioSel.value : 'No evaluado';
-            doc.text(`${texto}: ${nota}`, 14, yRow);
+            
+            doc.setFont("Helvetica", "normal");
+            doc.text(texto, 18, yRow + 5.5);
+            
+            doc.setFont("Helvetica", "bold");
+            if(nota !== 'No evaluado') doc.setTextColor(...cSecundario);
+            doc.text(nota, 180, yRow + 5.5, { align: "right" });
+            doc.setTextColor(...cGrisOscuro);
+
             yRow += 8;
         });
 
-        // Promedio Global
+        // Fila de Promedio Global
+        doc.setFillColor(238, 244, 255); // Azul muy claro
+        doc.rect(14, yRow + 2, 182, 10, 'F');
+        
         const resultadoDiv = document.getElementById('resultado');
         const textoPromedio = resultadoDiv ? resultadoDiv.innerText : 'Promedio: -';
+        
+        doc.setTextColor(...cPrimario);
         doc.setFont("Helvetica", "bold");
-        doc.text(`Cierre de Evaluación -> ${textoPromedio}`, 14, yRow + 6);
+        doc.setFontSize(11);
+        doc.text(`RESULTADO FINAL:  ${textoPromedio}`, 18, yRow + 8.5);
 
-        // Observaciones escritas
-        doc.text("Observaciones del Inspector:", 14, yRow + 18);
+        // --- BLOQUE 3: OBSERVACIONES ---
+        yRow += 22;
+        doc.setFontSize(12);
+        doc.text("Observaciones del Inspector", 14, yRow);
+        
+        doc.setLineWidth(0.3);
+        doc.setDrawColor(200, 200, 200);
+        doc.line(14, yRow + 3, 196, yRow + 3);
+
         doc.setFont("Helvetica", "normal");
-        doc.text(observaciones, 14, yRow + 26, { maxWidth: 180 });
+        doc.setFontSize(10);
+        doc.setTextColor(50, 50, 50);
+        
+        // Multi-línea automático para evitar desbordes de texto a los lados
+        const lineasObs = doc.splitTextToSize(observaciones, 180);
+        doc.text(lineasObs, 14, yRow + 10);
 
-        // Firma del Evaluador (Solo Nombre Escrito)
+        // --- BLOQUE 4: FIRMA ---
+        // Forzar la firma hacia abajo de las observaciones dinámicamente
+        const altoObservaciones = lineasObs.length * 5; 
+        let yFirma = yRow + 25 + altoObservaciones;
+
+        // Validar si se pasa del límite de la página para no cortar la firma
+        if (yFirma > 260) {
+            doc.addPage();
+            yFirma = 30;
+        }
+
+        doc.setDrawColor(...cPrimario);
+        doc.setLineWidth(0.5);
+        doc.line(14, yFirma, 90, yFirma); // Línea de firma
+
+        doc.setTextColor(...cGrisOscuro);
         doc.setFont("Helvetica", "bold");
-        doc.text("Firma de Conformidad:", 14, yRow + 50);
+        doc.setFontSize(10);
+        doc.text("Firma de Conformidad", 14, yFirma + 5);
+        
         doc.setFont("Helvetica", "italic");
-        doc.text(`Firmado digitalmente por: ${nombreFirma}`, 14, yRow + 58);
+        doc.setFontSize(9);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Resp: ${nombreFirma}`, 14, yFirma + 10);
+        doc.text(`Validado electrónicamente vía formulario ACCESS`, 14, yFirma + 14);
 
-        // Descarga automatizada reemplazando espacios para evitar caracteres extraños en el archivo
+        // Guardar archivo
         const nombreArchivo = proveedor.replace(/\s+/g, '_');
         doc.save(`Evaluacion_${nombreArchivo}_${fecha}.pdf`);
     }
