@@ -29,37 +29,32 @@
             padding: 35px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(10, 37, 64, 0.1);
-            border-top: 6px solid #002B49;
+            border-top: 6px solid #002B49; /* Azul Marino Oscuro Principal */
         }
 
-        .header-logo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 25px;
-        }
-
-        .logo-img {
-            max-width: 180px;
-            height: auto;
-            margin-bottom: 10px;
+        h1 {
+            text-align: center;
+            color: #002B49;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
         }
 
         .subtitle-main {
             text-align: center;
             color: #5C768D;
-            font-size: 15px;
+            font-size: 14px;
             text-transform: uppercase;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            margin-bottom: 25px;
         }
 
         h2 {
             margin-top: 30px;
             color: #002B49;
             font-size: 18px;
-            border-bottom: 2px solid #FF5A00; /* Naranja corporativo del logo en el borde */
+            border-bottom: 2px solid #005A9C; /* Azul Secundario */
             padding-bottom: 6px;
         }
 
@@ -96,7 +91,7 @@
 
         input:focus, textarea:focus {
             outline: none;
-            border-color: #002B49;
+            border-color: #005A9C;
             background-color: #FFF;
         }
 
@@ -111,7 +106,7 @@
             padding: 20px;
             background: #F8FAFC;
             border-radius: 8px;
-            border-left: 4px solid #002B49;
+            border-left: 4px solid #005A9C;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
@@ -141,7 +136,7 @@
             width: auto;
             margin-bottom: 6px;
             cursor: pointer;
-            accent-color: #FF5A00; /* Naranja en los controles de selección */
+            accent-color: #005A9C; /* Aplica el color azul al radio button */
         }
 
         button {
@@ -161,7 +156,7 @@
         }
 
         button:hover {
-            background: #FF5A00; /* Cambia a naranja al pasar el mouse */
+            background: #004270;
         }
 
         #resultado {
@@ -180,11 +175,8 @@
 <body>
 
 <div class="container">
-    <!-- Encabezado con Logo oficial integrado de accesslac_logo.jfif -->
-    <div class="header-logo-container">
-        <img class="logo-img" src="data:image/png;base64,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" alt="ACCESS Logo">
-        <div class="subtitle-main">Registro Inspección Mensual - Evaluación de Proveedores</div>
-    </div>
+    <h1>ACCESS</h1>
+    <div class="subtitle-main">Registro Inspección Mensual - Evaluación de Proveedores</div>
 
     <!-- Datos de cabecera -->
     <div class="row">
@@ -320,10 +312,7 @@
 </div>
 
 <script>
-    // Almacenamos el Base64 del logo de la imagen accesslac_logo.jfif para usarlo en el PDF dinámico
-    const logoBase64 = "data:image/png;base64,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|";
-
-    // 1. Controladores de eventos para calcular el promedio dinámico
+    // 1. Controladores de eventos para calcular el promedio dinámico automáticamente
     const radios = document.querySelectorAll('input[type="radio"]');
     radios.forEach(radio => {
         radio.addEventListener('change', calcularPromedio);
@@ -352,7 +341,7 @@
         }
     }
 
-    // 2. Generación estructurada del archivo PDF usando jsPDF con inclusión de logotipo
+    // 2. Generación estructurada del archivo PDF usando jsPDF con los mismos tonos corporativos
     function generarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -365,24 +354,18 @@
         const observaciones = document.getElementById('observaciones').value || 'Sin observaciones adicionales.';
         const nombreFirma = document.getElementById('nombreFirma').value || 'No especificado';
 
-        // Encabezado Principal en Blanco con Borde Inferior Naranja (#FF5A00)
-        doc.setFillColor(255, 255, 255);
-        doc.rect(0, 0, 210, 32, 'F');
+        // Encabezado Principal Estilo ACCESS
+        doc.setFillColor(0, 43, 73); // #002B49 en RGB
+        doc.rect(0, 0, 210, 28, 'F');
         
-        // Agregar logotipo oficial desde Base64 alineado a la izquierda
-        doc.addImage(logoBase64, 'PNG', 14, 4, 30, 24);
-        
-        // Texto del Encabezado alineado
-        doc.setTextColor(0, 43, 73); // Azul Marino
+        doc.setTextColor(255, 255, 255);
         doc.setFont("Helvetica", "bold");
-        doc.setFontSize(11);
-        doc.text("REGISTRO DE INSPECCIÓN MENSUAL", 75, 15);
-        doc.text("EVALUACIÓN DE PROVEEDORES EN TERRENO", 75, 21);
-
-        // Línea divisoria en naranja corporativo
-        doc.setDrawColor(255, 90, 0); // #FF5A00
-        doc.setLineWidth(1);
-        doc.line(0, 32, 210, 32);
+        doc.setFontSize(18);
+        doc.text("ACCESS", 14, 18);
+        
+        doc.setFontSize(10);
+        doc.setFont("Helvetica", "normal");
+        doc.text("REGISTRO DE INSPECCIÓN MENSUAL - EVALUACIÓN DE PROVEEDORES", 75, 17);
 
         // Volver a texto oscuro para el contenido
         doc.setTextColor(26, 54, 93);
@@ -390,24 +373,24 @@
         // Bloque de Información General
         doc.setFontSize(11);
         doc.setFont("Helvetica", "bold");
-        doc.text("1. ANTECEDENTES GENERALES", 14, 46);
+        doc.text("1. ANTECEDENTES GENERALES", 14, 42);
         
         doc.setFont("Helvetica", "normal");
         doc.setTextColor(45, 55, 72);
-        doc.text(`Fecha Mantención: ${fecha}`, 14, 54);
-        doc.text(`Proveedor Evaluado: ${proveedor}`, 14, 61);
-        doc.text(`Equipo / Maquinaria: ${equipo}`, 14, 68);
-        doc.text(`Técnico Principal: ${tecnico}`, 14, 75);
-        doc.text(`Supervisor Evaluador: ${evaluador}`, 14, 82);
+        doc.text(`Fecha Mantención: ${fecha}`, 14, 50);
+        doc.text(`Proveedor Evaluado: ${proveedor}`, 14, 57);
+        doc.text(`Equipo / Maquinaria: ${equipo}`, 14, 64);
+        doc.text(`Técnico Principal: ${tecnico}`, 14, 71);
+        doc.text(`Supervisor Evaluador: ${evaluador}`, 14, 78);
 
         // Bloque de Calificaciones
         doc.setTextColor(26, 54, 93);
         doc.setFont("Helvetica", "bold");
-        doc.text("2. PUNTAJES OBTENIDOS POR CRITERIO (Escala 1 - 7)", 14, 96);
+        doc.text("2. PUNTAJES OBTENIDOS POR CRITERIO (Escala 1 - 7)", 14, 92);
         doc.setFont("Helvetica", "normal");
         doc.setTextColor(45, 55, 72);
 
-        let yRow = 104;
+        let yRow = 100;
         const preguntasTexto = [
             "P1. Puntualidad y cumplimiento de horarios acordados",
             "P2. Uso correcto de Elementos de Protección Personal (EPP)",
@@ -431,7 +414,7 @@
         const resultadoDiv = document.getElementById('resultado');
         const textoPromedio = resultadoDiv ? resultadoDiv.innerText : 'Promedio Actual: -';
         
-        doc.setFillColor(235, 244, 250); 
+        doc.setFillColor(235, 244, 250); // Fondo azul claro para el promedio
         doc.rect(14, yRow + 2, 182, 10, 'F');
         doc.setTextColor(0, 43, 73);
         doc.setFont("Helvetica", "bold");
@@ -446,8 +429,8 @@
 
         // Bloque del Firmante
         doc.setLineWidth(0.5);
-        doc.setDrawColor(200, 200, 200);
-        doc.line(14, yRow + 70, 90, yRow + 70); 
+        doc.setDrawColor(208, 225, 253);
+        doc.line(14, yRow + 70, 90, yRow + 70); // Línea sobre el nombre de la firma
         
         doc.setTextColor(0, 43, 73);
         doc.setFont("Helvetica", "bold");
@@ -455,9 +438,9 @@
         doc.setFont("Helvetica", "italic");
         doc.setFontSize(10);
         doc.text(`Nombre: ${nombreFirma}`, 14, yRow + 82);
-        doc.text("Validado mediante registro digital interno corporativo.", 14, yRow + 87);
+        doc.text("Validado mediante registro digital interno.", 14, yRow + 87);
 
-        // Descarga
+        // Guardado con nomenclatura limpia
         const nombreArchivo = proveedor.replace(/\s+/g, '_');
         doc.save(`Evaluacion_${nombreArchivo}_${fecha}.pdf`);
     }
