@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación de Proveedores - ACCESS</title>
     
-    <link href="https://fonts.googleapis.com/css2=family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Corregido el enlace de Google Fonts (?family= en vez de =family=) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
@@ -310,7 +311,7 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // Variables de datos
+        // Variables de datos básicos
         const fecha = document.getElementById('fecha').value || 'No especificada';
         const proveedor = document.getElementById('proveedor').value || 'No especificado';
         const equipo = document.getElementById('equipo').value || 'N/A';
@@ -320,15 +321,15 @@
         const observaciones = document.getElementById('observaciones').value || 'Sin observaciones adicionales.';
         const nombreFirma = document.getElementById('nombreFirma').value || 'No especificado';
 
-        // --- ESTILOS Y COLORES ---
-        const cPrimario = [0, 59, 109];     // #003b6d
-        const cSecundario = [11, 110, 253]; // #0b6efd
+        // Estilos de paleta de colores corporativos
+        const cPrimario = [0, 59, 109];     
+        const cSecundario = [11, 110, 253]; 
         const cGrisOscuro = [60, 60, 60];
         const cGrisClaro = [240, 244, 248];
 
         // --- ENCABEZADO ---
-        doc.setFillColor(...cPrimario);
-        doc.rect(0, 0, 210, 25, 'F'); // Banda azul superior
+        doc.setFillColor(cPrimario[0], cPrimario[1], cPrimario[2]);
+        doc.rect(0, 0, 210, 25, 'F'); 
         
         doc.setTextColor(255, 255, 255);
         doc.setFont("Helvetica", "bold");
@@ -336,51 +337,49 @@
         doc.text("ACCESS", 14, 16);
         doc.setFontSize(11);
         doc.setFont("Helvetica", "normal");
-        doc.text("REGISTRO DE INSPECCIÓN MENSUAL", 210 - 14, 16, { align: "right" });
+        doc.text("REGISTRO DE INSPECCIÓN MENSUAL", 196, 16, { align: "right" });
 
         // Título del Reporte
-        doc.setTextColor(...cPrimario);
+        doc.setTextColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(16);
         doc.text("EVALUACIÓN DE PROVEEDORES", 14, 40);
 
         // --- BLOQUE 1: INFORMACIÓN GENERAL ---
-        doc.setDrawColor(...cSecundario);
+        doc.setDrawColor(cSecundario[0], cSecundario[1], cSecundario[2]);
         doc.setLineWidth(0.5);
-        doc.line(14, 44, 196, 44); // Línea decorativa
+        doc.line(14, 44, 196, 44); 
 
         doc.setFontSize(10);
-        doc.setTextColor(...cGrisOscuro);
+        doc.setTextColor(cGrisOscuro[0], cGrisOscuro[1], cGrisOscuro[2]);
         
-        // Columna 1
+        // Fila 1 de información
         doc.setFont("Helvetica", "bold"); doc.text("Fecha Mantención:", 14, 54);
-        doc.setFont("Helvetica", "normal"); doc.text(fecha, 50, 54);
-
-        doc.setFont("Helvetica", "bold"); doc.text("Proveedor Evaluado:", 14, 62);
-        doc.setFont("Helvetica", "normal"); doc.text(proveedor, 50, 62);
-
-        doc.setFont("Helvetica", "bold"); doc.text("Equipo / Maquinaria:", 14, 70);
-        doc.setFont("Helvetica", "normal"); doc.text(equipo, 50, 70);
-
-        // Columna 2
+        doc.setFont("Helvetica", "normal"); doc.text(fecha, 52, 54);
         doc.setFont("Helvetica", "bold"); doc.text("Técnico Principal:", 110, 54);
         doc.setFont("Helvetica", "normal"); doc.text(tecnico, 145, 54);
 
+        // Fila 2 de información
+        doc.setFont("Helvetica", "bold"); doc.text("Proveedor Evaluado:", 14, 62);
+        doc.setFont("Helvetica", "normal"); doc.text(proveedor, 52, 62);
         doc.setFont("Helvetica", "bold"); doc.text("Acompañante:", 110, 62);
         doc.setFont("Helvetica", "normal"); doc.text(acompanante, 145, 62);
 
+        // Fila 3 de información
+        doc.setFont("Helvetica", "bold"); doc.text("Equipo / Maquinaria:", 14, 70);
+        doc.setFont("Helvetica", "normal"); doc.text(equipo, 52, 70);
         doc.setFont("Helvetica", "bold"); doc.text("Evaluador:", 110, 70);
         doc.setFont("Helvetica", "normal"); doc.text(evaluador, 145, 70);
 
         // --- BLOQUE 2: CALIFICACIONES (ESTILO TABLA) ---
-        doc.setTextColor(...cPrimario);
+        doc.setTextColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(12);
         doc.text("Puntajes por Criterio (Escala 1 - 7)", 14, 85);
 
         // Encabezados de Tabla
         let yRow = 92;
-        doc.setFillColor(...cPrimario);
+        doc.setFillColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.rect(14, yRow, 182, 7, 'F');
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(9);
@@ -397,11 +396,10 @@
             "P6: Calidad general del servicio"
         ];
 
-        doc.setTextColor(...cGrisOscuro);
+        doc.setTextColor(cGrisOscuro[0], cGrisOscuro[1], cGrisOscuro[2]);
         preguntasTexto.forEach((texto, index) => {
-            // Fondo alternado gris para legibilidad
             if (index % 2 === 0) {
-                doc.setFillColor(...cGrisClaro);
+                doc.setFillColor(cGrisClaro[0], cGrisClaro[1], cGrisClaro[2]);
                 doc.rect(14, yRow, 182, 8, 'F');
             }
             
@@ -412,21 +410,23 @@
             doc.text(texto, 18, yRow + 5.5);
             
             doc.setFont("Helvetica", "bold");
-            if(nota !== 'No evaluado') doc.setTextColor(...cSecundario);
+            if(nota !== 'No evaluado') {
+                doc.setTextColor(cSecundario[0], cSecundario[1], cSecundario[2]);
+            }
             doc.text(nota, 180, yRow + 5.5, { align: "right" });
-            doc.setTextColor(...cGrisOscuro);
+            doc.setTextColor(cGrisOscuro[0], cGrisOscuro[1], cGrisOscuro[2]);
 
             yRow += 8;
         });
 
         // Fila de Promedio Global
-        doc.setFillColor(238, 244, 255); // Azul muy claro
+        doc.setFillColor(238, 244, 255); 
         doc.rect(14, yRow + 2, 182, 10, 'F');
         
         const resultadoDiv = document.getElementById('resultado');
         const textoPromedio = resultadoDiv ? resultadoDiv.innerText : 'Promedio: -';
         
-        doc.setTextColor(...cPrimario);
+        doc.setTextColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(11);
         doc.text(`RESULTADO FINAL:  ${textoPromedio}`, 18, yRow + 8.5);
@@ -444,26 +444,23 @@
         doc.setFontSize(10);
         doc.setTextColor(50, 50, 50);
         
-        // Multi-línea automático para evitar desbordes de texto a los lados
         const lineasObs = doc.splitTextToSize(observaciones, 180);
         doc.text(lineasObs, 14, yRow + 10);
 
         // --- BLOQUE 4: FIRMA ---
-        // Forzar la firma hacia abajo de las observaciones dinámicamente
         const altoObservaciones = lineasObs.length * 5; 
         let yFirma = yRow + 25 + altoObservaciones;
 
-        // Validar si se pasa del límite de la página para no cortar la firma
         if (yFirma > 260) {
             doc.addPage();
             yFirma = 30;
         }
 
-        doc.setDrawColor(...cPrimario);
+        doc.setDrawColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.setLineWidth(0.5);
-        doc.line(14, yFirma, 90, yFirma); // Línea de firma
+        doc.line(14, yFirma, 90, yFirma); 
 
-        doc.setTextColor(...cGrisOscuro);
+        doc.setTextColor(cGrisOscuro[0], cGrisOscuro[1], cGrisOscuro[2]);
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(10);
         doc.text("Firma de Conformidad", 14, yFirma + 5);
