@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación de Proveedores - ACCESS</title>
     
-    <!-- Fuentes y Librerías Externas -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -18,7 +17,7 @@
         }
 
         body {
-            background: #f4f6f9;
+            background: #f2f5f9;
             padding: 30px;
         }
 
@@ -26,41 +25,27 @@
             max-width: 900px;
             margin: auto;
             background: white;
-            padding: 35px;
+            padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(10, 37, 64, 0.1);
-            border-top: 6px solid #002B49; /* Azul Marino Oscuro Principal */
+            box-shadow: 0 10px 25px rgba(0,0,0,.15);
         }
 
         h1 {
             text-align: center;
-            color: #002B49;
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .subtitle-main {
-            text-align: center;
-            color: #5C768D;
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 25px;
+            color: #003b6d;
+            margin-bottom: 10px;
         }
 
         h2 {
-            margin-top: 30px;
-            color: #002B49;
-            font-size: 18px;
-            border-bottom: 2px solid #005A9C; /* Azul Secundario */
-            padding-bottom: 6px;
+            margin-top: 25px;
+            color: #003b6d;
+            border-bottom: 2px solid #0b6efd;
+            padding-bottom: 5px;
         }
 
         .row {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             margin-top: 15px;
             flex-wrap: wrap;
         }
@@ -73,26 +58,15 @@
         label {
             display: block;
             font-weight: 600;
-            color: #1A365D;
-            margin-bottom: 6px;
-            font-size: 14px;
+            margin-bottom: 5px;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #D2D9E1;
-            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
             font-size: 14px;
-            color: #2D3748;
-            background-color: #FCFDFE;
-            transition: border-color 0.2s ease;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #005A9C;
-            background-color: #FFF;
         }
 
         textarea {
@@ -102,73 +76,67 @@
         }
 
         .question {
-            margin-top: 18px;
-            padding: 20px;
-            background: #F8FAFC;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
             border-radius: 8px;
-            border-left: 4px solid #005A9C;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border-left: 4px solid #0b6efd;
         }
 
         .question-title {
             font-weight: 600;
-            color: #002B49;
-            font-size: 15px;
+            color: #333;
+            margin-bottom: 10px;
         }
 
         .rating {
             display: flex;
             justify-content: space-between;
-            max-width: 550px;
-            margin-top: 12px;
+            max-width: 500px;
+            margin-top: 10px;
         }
 
         .rating label {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-weight: 500;
-            color: #4A5568;
+            font-weight: normal;
             cursor: pointer;
         }
 
         .rating input {
             width: auto;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             cursor: pointer;
-            accent-color: #005A9C; /* Aplica el color azul al radio button */
         }
 
         button {
-            margin-top: 30px;
+            margin-top: 20px;
             width: 100%;
             padding: 18px;
-            background: #002B49;
+            background: #0b6efd;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            letter-spacing: 0.5px;
             transition: background 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 43, 73, 0.2);
         }
 
         button:hover {
-            background: #004270;
+            background: #084298;
         }
 
         #resultado {
-            margin-top: 30px;
-            padding: 18px;
-            background: #EBF4FA;
-            border-radius: 8px;
+            margin-top: 25px;
+            padding: 15px;
+            background: #eef4ff;
+            border-radius: 10px;
             font-size: 20px;
-            font-weight: 700;
+            font-weight: bold;
             text-align: center;
-            color: #002B49;
-            border: 1px solid #D0E1FD;
+            color: #003b6d;
         }
     </style>
 </head>
@@ -176,47 +144,45 @@
 
 <div class="container">
     <h1>ACCESS</h1>
-    <div class="subtitle-main">Registro Inspección Mensual - Evaluación de Proveedores</div>
+    <h2>Registro Inspección Mensual - Evaluación de Proveedores</h2>
 
-    <!-- Datos de cabecera -->
     <div class="row">
         <div class="col">
             <label for="fecha">Fecha Mantención</label>
             <input type="date" id="fecha">
         </div>
         <div class="col">
-            <label for="proveedor">Proveedor</label>
-            <input type="text" id="proveedor" placeholder="Nombre de la empresa proveedora...">
+            <label for="proveedor">Proveedor (Ingreso Manual)</label>
+            <input type="text" id="proveedor" placeholder="Escriba el nombre del proveedor...">
         </div>
     </div>
 
     <div class="row">
         <div class="col">
             <label for="equipo">Equipo / Maquinaria</label>
-            <input type="text" id="equipo" placeholder="Ej: Grúa Horquilla, Generador...">
+            <input type="text" id="equipo">
         </div>
         <div class="col">
             <label for="tecnico">Técnico Principal</label>
-            <input type="text" id="tecnico" placeholder="Nombre del técnico...">
+            <input type="text" id="tecnico">
         </div>
     </div>
 
     <div class="row">
         <div class="col">
             <label for="acompanante">Acompañante (Opcional)</label>
-            <input type="text" id="acompanante" placeholder="Nombre del acompañante...">
+            <input type="text" id="acompanante">
         </div>
         <div class="col">
             <label for="evaluador">Evaluador</label>
-            <input type="text" id="evaluador" placeholder="Nombre del supervisor/evaluador...">
+            <input type="text" id="evaluador">
         </div>
     </div>
 
-    <h2>Criterios de Evaluación</h2>
+    <h2>Evaluación</h2>
 
-    <!-- Cuestionario con escala 1 a 7 por ítem -->
     <div class="question">
-        <div class="question-title">P1: Puntualidad y cumplimiento de horarios acordados</div>
+        <div class="question-title">P1: Puntualidad</div>
         <div class="rating">
             <label><input type="radio" name="p1" value="1">1</label>
             <label><input type="radio" name="p1" value="2">2</label>
@@ -229,7 +195,7 @@
     </div>
 
     <div class="question">
-        <div class="question-title">P2: Uso correcto de Elementos de Protección Personal (EPP) y Seguridad</div>
+        <div class="question-title">P2: Uso de EPP</div>
         <div class="rating">
             <label><input type="radio" name="p2" value="1">1</label>
             <label><input type="radio" name="p2" value="2">2</label>
@@ -242,7 +208,7 @@
     </div>
 
     <div class="question">
-        <div class="question-title">P3: Disposición y actitud ante requerimientos en terreno</div>
+        <div class="question-title">P3: Disposición</div>
         <div class="rating">
             <label><input type="radio" name="p3" value="1">1</label>
             <label><input type="radio" name="p3" value="2">2</label>
@@ -255,7 +221,7 @@
     </div>
 
     <div class="question">
-        <div class="question-title">P4: Orden, aseo y limpieza del área de trabajo al retirar del sitio</div>
+        <div class="question-title">P4: Orden y limpieza</div>
         <div class="rating">
             <label><input type="radio" name="p4" value="1">1</label>
             <label><input type="radio" name="p4" value="2">2</label>
@@ -268,7 +234,7 @@
     </div>
 
     <div class="question">
-        <div class="question-title">P5: Entrega oportuna de informes técnicos o actas de servicio</div>
+        <div class="question-title">P5: Entrega de informe</div>
         <div class="rating">
             <label><input type="radio" name="p5" value="1">1</label>
             <label><input type="radio" name="p5" value="2">2</label>
@@ -281,7 +247,7 @@
     </div>
 
     <div class="question">
-        <div class="question-title">P6: Calidad general del servicio y ejecución técnica</div>
+        <div class="question-title">P6: Calidad general del servicio</div>
         <div class="rating">
             <label><input type="radio" name="p6" value="1">1</label>
             <label><input type="radio" name="p6" value="2">2</label>
@@ -293,21 +259,21 @@
         </div>
     </div>
 
-    <h2>Observaciones Generales</h2>
-    <textarea id="observaciones" placeholder="Detalle fallas detectadas, repuestos sugeridos o comentarios clave..."></textarea>
+    <h2>Observaciones</h2>
+    <textarea id="observaciones" placeholder="Escriba aquí comentarios adicionales..."></textarea>
 
-    <h2>Firma de Conformidad</h2>
+    <h2>Firma del Evaluador</h2>
     <div style="margin-top: 15px;">
         <label for="nombreFirma">Nombre completo del Firmante</label>
-        <input type="text" id="nombreFirma" placeholder="Escriba su nombre y apellido para autorizar...">
+        <input type="text" id="nombreFirma" placeholder="Escriba su nombre y apellido para firmar el documento...">
     </div>
 
     <div id="resultado">
-        Promedio Actual: -
+        Promedio: -
     </div>
 
     <button type="button" onclick="generarPDF()">
-        FINALIZAR REGISTRO Y GENERAR PDF
+        GUARDAR Y GENERAR PDF
     </button>
 </div>
 
@@ -334,14 +300,14 @@
         if (resultadoDiv) {
             if (contadas > 0) {
                 const promedio = (suma / contadas).toFixed(1);
-                resultadoDiv.innerText = `Promedio Actual: ${promedio}`;
+                resultadoDiv.innerText = `Promedio: ${promedio}`;
             } else {
-                resultadoDiv.innerText = "Promedio Actual: -";
+                resultadoDiv.innerText = "Promedio: -";
             }
         }
     }
 
-    // 2. Generación estructurada del archivo PDF usando jsPDF con los mismos tonos corporativos
+    // 2. Generación estructurada del archivo PDF usando jsPDF
     function generarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -354,93 +320,60 @@
         const observaciones = document.getElementById('observaciones').value || 'Sin observaciones adicionales.';
         const nombreFirma = document.getElementById('nombreFirma').value || 'No especificado';
 
-        // Encabezado Principal Estilo ACCESS
-        doc.setFillColor(0, 43, 73); // #002B49 en RGB
-        doc.rect(0, 0, 210, 28, 'F');
-        
-        doc.setTextColor(255, 255, 255);
+        // Título del Documento
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(18);
-        doc.text("ACCESS", 14, 18);
+        doc.text("ACCESS - Registro de Inspección Mensual", 14, 20);
         
-        doc.setFontSize(10);
-        doc.setFont("Helvetica", "normal");
-        doc.text("REGISTRO DE INSPECCIÓN MENSUAL - EVALUACIÓN DE PROVEEDORES", 75, 17);
-
-        // Volver a texto oscuro para el contenido
-        doc.setTextColor(26, 54, 93);
-        
-        // Bloque de Información General
+        // Información General
         doc.setFontSize(11);
-        doc.setFont("Helvetica", "bold");
-        doc.text("1. ANTECEDENTES GENERALES", 14, 42);
-        
         doc.setFont("Helvetica", "normal");
-        doc.setTextColor(45, 55, 72);
-        doc.text(`Fecha Mantención: ${fecha}`, 14, 50);
-        doc.text(`Proveedor Evaluado: ${proveedor}`, 14, 57);
-        doc.text(`Equipo / Maquinaria: ${equipo}`, 14, 64);
-        doc.text(`Técnico Principal: ${tecnico}`, 14, 71);
-        doc.text(`Supervisor Evaluador: ${evaluador}`, 14, 78);
+        doc.text(`Fecha Mantención: ${fecha}`, 14, 32);
+        doc.text(`Proveedor Evaluado: ${proveedor}`, 14, 40);
+        doc.text(`Equipo / Maquinaria: ${equipo}`, 14, 48);
+        doc.text(`Técnico Principal: ${tecnico}`, 14, 56);
+        doc.text(`Evaluador del Servicio: ${evaluador}`, 14, 64);
 
         // Bloque de Calificaciones
-        doc.setTextColor(26, 54, 93);
         doc.setFont("Helvetica", "bold");
-        doc.text("2. PUNTAJES OBTENIDOS POR CRITERIO (Escala 1 - 7)", 14, 92);
+        doc.text("Puntajes por Criterio (Escala 1 - 7):", 14, 76);
         doc.setFont("Helvetica", "normal");
-        doc.setTextColor(45, 55, 72);
 
-        let yRow = 100;
+        let yRow = 84;
         const preguntasTexto = [
-            "P1. Puntualidad y cumplimiento de horarios acordados",
-            "P2. Uso correcto de Elementos de Protección Personal (EPP)",
-            "P3. Disposición y actitud ante requerimientos en terreno",
-            "P4. Orden, aseo y limpieza del área de trabajo al retirar",
-            "P5. Entrega oportuna de informes técnicos o actas de servicio",
-            "P6. Calidad general del servicio y ejecución técnica"
+            "P1: Puntualidad",
+            "P2: Uso de EPP",
+            "P3: Disposición",
+            "P4: Orden y limpieza",
+            "P5: Entrega de informe",
+            "P6: Calidad general del servicio"
         ];
 
         preguntasTexto.forEach((texto, index) => {
             const radioSel = document.querySelector(`input[name="p${index + 1}"]:checked`);
             const nota = radioSel ? radioSel.value : 'No evaluado';
-            doc.text(`${texto}:`, 14, yRow);
-            doc.setFont("Helvetica", "bold");
-            doc.text(`[ ${nota} ]`, 165, yRow);
-            doc.setFont("Helvetica", "normal");
+            doc.text(`${texto}: ${nota}`, 14, yRow);
             yRow += 8;
         });
 
-        // Promedio Global Destacado
+        // Promedio Global
         const resultadoDiv = document.getElementById('resultado');
-        const textoPromedio = resultadoDiv ? resultadoDiv.innerText : 'Promedio Actual: -';
-        
-        doc.setFillColor(235, 244, 250); // Fondo azul claro para el promedio
-        doc.rect(14, yRow + 2, 182, 10, 'F');
-        doc.setTextColor(0, 43, 73);
+        const textoPromedio = resultadoDiv ? resultadoDiv.innerText : 'Promedio: -';
         doc.setFont("Helvetica", "bold");
-        doc.text(`RESULTADO FINAL -> ${textoPromedio}`, 18, yRow + 9);
+        doc.text(`Cierre de Evaluación -> ${textoPromedio}`, 14, yRow + 6);
 
         // Observaciones escritas
-        doc.setTextColor(26, 54, 93);
-        doc.text("3. OBSERVACIONES Y COMENTARIOS DEL INSPECTOR", 14, yRow + 26);
+        doc.text("Observaciones del Inspector:", 14, yRow + 18);
         doc.setFont("Helvetica", "normal");
-        doc.setTextColor(45, 55, 72);
-        doc.text(observaciones, 14, yRow + 34, { maxWidth: 182 });
+        doc.text(observaciones, 14, yRow + 26, { maxWidth: 180 });
 
-        // Bloque del Firmante
-        doc.setLineWidth(0.5);
-        doc.setDrawColor(208, 225, 253);
-        doc.line(14, yRow + 70, 90, yRow + 70); // Línea sobre el nombre de la firma
-        
-        doc.setTextColor(0, 43, 73);
+        // Firma del Evaluador (Solo Nombre Escrito)
         doc.setFont("Helvetica", "bold");
-        doc.text("Firma de Validación", 14, yRow + 76);
+        doc.text("Firma de Conformidad:", 14, yRow + 50);
         doc.setFont("Helvetica", "italic");
-        doc.setFontSize(10);
-        doc.text(`Nombre: ${nombreFirma}`, 14, yRow + 82);
-        doc.text("Validado mediante registro digital interno.", 14, yRow + 87);
+        doc.text(`Firmado digitalmente por: ${nombreFirma}`, 14, yRow + 58);
 
-        // Guardado con nomenclatura limpia
+        // Descarga automatizada reemplazando espacios para evitar caracteres extraños en el archivo
         const nombreArchivo = proveedor.replace(/\s+/g, '_');
         doc.save(`Evaluacion_${nombreArchivo}_${fecha}.pdf`);
     }
