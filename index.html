@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación de Proveedores - ACCESS</title>
     
-    <!-- Corregido el enlace de Google Fonts (?family= en vez de =family=) -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- URL corregida para evitar errores de parseo en servidores de despliegue (&amp;) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
@@ -300,7 +300,7 @@
         if (resultadoDiv) {
             if (contadas > 0) {
                 const promedio = (suma / contadas).toFixed(1);
-                resultadoDiv.innerText = `Promedio: ${promedio}`;
+                resultadoDiv.innerText = "Promedio: " + promedio;
             } else {
                 resultadoDiv.innerText = "Promedio: -";
             }
@@ -311,7 +311,6 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // Variables de datos básicos
         const fecha = document.getElementById('fecha').value || 'No especificada';
         const proveedor = document.getElementById('proveedor').value || 'No especificado';
         const equipo = document.getElementById('equipo').value || 'N/A';
@@ -321,13 +320,11 @@
         const observaciones = document.getElementById('observaciones').value || 'Sin observaciones adicionales.';
         const nombreFirma = document.getElementById('nombreFirma').value || 'No especificado';
 
-        // Estilos de paleta de colores corporativos
         const cPrimario = [0, 59, 109];     
         const cSecundario = [11, 110, 253]; 
         const cGrisOscuro = [60, 60, 60];
         const cGrisClaro = [240, 244, 248];
 
-        // --- ENCABEZADO ---
         doc.setFillColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.rect(0, 0, 210, 25, 'F'); 
         
@@ -339,13 +336,11 @@
         doc.setFont("Helvetica", "normal");
         doc.text("REGISTRO DE INSPECCIÓN MENSUAL", 196, 16, { align: "right" });
 
-        // Título del Reporte
         doc.setTextColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(16);
         doc.text("EVALUACIÓN DE PROVEEDORES", 14, 40);
 
-        // --- BLOQUE 1: INFORMACIÓN GENERAL ---
         doc.setDrawColor(cSecundario[0], cSecundario[1], cSecundario[2]);
         doc.setLineWidth(0.5);
         doc.line(14, 44, 196, 44); 
@@ -353,31 +348,26 @@
         doc.setFontSize(10);
         doc.setTextColor(cGrisOscuro[0], cGrisOscuro[1], cGrisOscuro[2]);
         
-        // Fila 1 de información
         doc.setFont("Helvetica", "bold"); doc.text("Fecha Mantención:", 14, 54);
         doc.setFont("Helvetica", "normal"); doc.text(fecha, 52, 54);
         doc.setFont("Helvetica", "bold"); doc.text("Técnico Principal:", 110, 54);
         doc.setFont("Helvetica", "normal"); doc.text(tecnico, 145, 54);
 
-        // Fila 2 de información
         doc.setFont("Helvetica", "bold"); doc.text("Proveedor Evaluado:", 14, 62);
         doc.setFont("Helvetica", "normal"); doc.text(proveedor, 52, 62);
         doc.setFont("Helvetica", "bold"); doc.text("Acompañante:", 110, 62);
         doc.setFont("Helvetica", "normal"); doc.text(acompanante, 145, 62);
 
-        // Fila 3 de información
         doc.setFont("Helvetica", "bold"); doc.text("Equipo / Maquinaria:", 14, 70);
         doc.setFont("Helvetica", "normal"); doc.text(equipo, 52, 70);
         doc.setFont("Helvetica", "bold"); doc.text("Evaluador:", 110, 70);
         doc.setFont("Helvetica", "normal"); doc.text(evaluador, 145, 70);
 
-        // --- BLOQUE 2: CALIFICACIONES (ESTILO TABLA) ---
         doc.setTextColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(12);
         doc.text("Puntajes por Criterio (Escala 1 - 7)", 14, 85);
 
-        // Encabezados de Tabla
         let yRow = 92;
         doc.setFillColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.rect(14, yRow, 182, 7, 'F');
@@ -419,7 +409,6 @@
             yRow += 8;
         });
 
-        // Fila de Promedio Global
         doc.setFillColor(238, 244, 255); 
         doc.rect(14, yRow + 2, 182, 10, 'F');
         
@@ -429,9 +418,8 @@
         doc.setTextColor(cPrimario[0], cPrimario[1], cPrimario[2]);
         doc.setFont("Helvetica", "bold");
         doc.setFontSize(11);
-        doc.text(`RESULTADO FINAL:  ${textoPromedio}`, 18, yRow + 8.5);
+        doc.text("RESULTADO FINAL: " + textoPromedio, 18, yRow + 8.5);
 
-        // --- BLOQUE 3: OBSERVACIONES ---
         yRow += 22;
         doc.setFontSize(12);
         doc.text("Observaciones del Inspector", 14, yRow);
@@ -447,7 +435,6 @@
         const lineasObs = doc.splitTextToSize(observaciones, 180);
         doc.text(lineasObs, 14, yRow + 10);
 
-        // --- BLOQUE 4: FIRMA ---
         const altoObservaciones = lineasObs.length * 5; 
         let yFirma = yRow + 25 + altoObservaciones;
 
@@ -468,12 +455,11 @@
         doc.setFont("Helvetica", "italic");
         doc.setFontSize(9);
         doc.setTextColor(100, 100, 100);
-        doc.text(`Resp: ${nombreFirma}`, 14, yFirma + 10);
-        doc.text(`Validado electrónicamente vía formulario ACCESS`, 14, yFirma + 14);
+        doc.text("Resp: " + nombreFirma, 14, yFirma + 10);
+        doc.text("Validado electrónicamente vía formulario ACCESS", 14, yFirma + 14);
 
-        // Guardar archivo
         const nombreArchivo = proveedor.replace(/\s+/g, '_');
-        doc.save(`Evaluacion_${nombreArchivo}_${fecha}.pdf`);
+        doc.save("Evaluacion_" + nombreArchivo + "_" + fecha + ".pdf");
     }
 </script>
 
