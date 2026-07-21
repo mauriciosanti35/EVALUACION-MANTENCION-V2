@@ -1,467 +1,84 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluación de Proveedores - ACCESS</title>
-    
-    <!-- URL corregida para evitar errores de parseo en servidores de despliegue (&amp;) -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+/**
+ * SCRIPT PARA GOOGLE SHEETS - Evaluación de Mantención Access Corp
+ *
+ * INSTRUCCIONES DE INSTALACIÓN:
+ *
+ * 1. Ve a https://sheets.google.com y crea una hoja de cálculo nueva.
+ *    Nómbrala, por ejemplo: "Evaluaciones Mantención Access Corp"
+ *
+ * 2. En la primera fila (fila 1), escribe estos encabezados, uno por columna (A a M):
+ *    Fecha | Proveedor | Nombre Técnico | RUT | Equipo/Maquinaria | P1 | P2 | P3 | P4 | P5 | P6 | Promedio | Comentarios | Evaluado Por | Fecha Registro
+ *
+ * 3. En la hoja, ve al menú: Extensiones > Apps Script
+ *
+ * 4. Borra el código de ejemplo que aparece (function myFunction(){}) y pega TODO este script.
+ *
+ * 5. Guarda el proyecto (ícono de disquete o Ctrl+S). Ponle un nombre, ej: "Webhook Evaluaciones"
+ *
+ * 6. Haz clic en "Implementar" (Deploy) > "Nueva implementación" (New deployment)
+ *    - Tipo: selecciona "Aplicación web" (Web app)
+ *    - Descripción: la que quieras
+ *    - Ejecutar como: "Yo" (tu cuenta)
+ *    - Quién tiene acceso: "Cualquier usuario" (Anyone)
+ *      (esto es necesario para que el formulario HTML pueda enviar datos sin iniciar sesión)
+ *
+ * 7. Haz clic en "Implementar". Google pedirá autorización la primera vez:
+ *    acepta los permisos (es tu propio script, es seguro).
+ *
+ * 8. Copia la "URL de la aplicación web" que te entrega (termina en /exec).
+ *    Esa es la URL que debes pegar en el HTML, reemplazando WEBHOOK_URL.
+ *
+ * 9. Cada vez que MODIFIQUES este script, debes volver a "Implementar" >
+ *    "Gestionar implementaciones" > ícono de lápiz > cambiar versión a "Nueva versión" > Implementar.
+ *    (si no haces esto, los cambios no se aplican aunque hayas guardado el código)
+ *
+ * NOTA IMPORTANTE: tanto tú como tu jefa deben usar la MISMA URL (/exec) en su copia del HTML.
+ * Como ambos apuntan a la misma hoja de Google Sheets, toda la información
+ * queda centralizada en un solo lugar, sin importar desde qué PC se llene el formulario.
+ */
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheets()[0]; // usa la primera hoja del archivo
 
-        body {
-            background: #f2f5f9;
-            padding: 30px;
-        }
+    var data = JSON.parse(e.postData.contents);
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,.15);
-        }
+    var fila = [
+      data.fecha || "",
+      data.proveedor || "",
+      data.nombreTecnico || "",
+      data.rut || "",
+      data.equipoMaquinaria || "",
+      data.p1 || "",
+      data.p2 || "",
+      data.p3 || "",
+      data.p4 || "",
+      data.p5 || "",
+      data.p6 || "",
+      data.promedio || "",
+      data.comentarios || "",
+      data.firma || "",
+      new Date() // fecha/hora exacta de registro, para trazabilidad
+    ];
 
-        h1 {
-            text-align: center;
-            color: #003b6d;
-            margin-bottom: 10px;
-        }
+    sheet.appendRow(fila);
 
-        h2 {
-            margin-top: 25px;
-            color: #003b6d;
-            border-bottom: 2px solid #0b6efd;
-            padding-bottom: 5px;
-        }
+    return ContentService
+      .createTextOutput(JSON.stringify({ resultado: "ok" }))
+      .setMimeType(ContentService.MimeType.JSON);
 
-        .row {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ resultado: "error", mensaje: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
 
-        .col {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        textarea {
-            height: 120px;
-            resize: none;
-            margin-top: 10px;
-        }
-
-        .question {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #0b6efd;
-        }
-
-        .question-title {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .rating {
-            display: flex;
-            justify-content: space-between;
-            max-width: 500px;
-            margin-top: 10px;
-        }
-
-        .rating label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-weight: normal;
-            cursor: pointer;
-        }
-
-        .rating input {
-            width: auto;
-            margin-bottom: 5px;
-            cursor: pointer;
-        }
-
-        button {
-            margin-top: 20px;
-            width: 100%;
-            padding: 18px;
-            background: #0b6efd;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s ease;
-        }
-
-        button:hover {
-            background: #084298;
-        }
-
-        #resultado {
-            margin-top: 25px;
-            padding: 15px;
-            background: #eef4ff;
-            border-radius: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            color: #003b6d;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>ACCESS</h1>
-    <h2>Registro Inspección Mensual - Evaluación de Proveedores</h2>
-
-    <div class="row">
-        <div class="col">
-            <label for="fecha">Fecha Mantención</label>
-            <input type="date" id="fecha">
-        </div>
-        <div class="col">
-            <label for="proveedor">Proveedor (Ingreso Manual)</label>
-            <input type="text" id="proveedor" placeholder="Escriba el nombre del proveedor...">
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col">
-            <label for="equipo">Equipo / Maquinaria</label>
-            <input type="text" id="equipo">
-        </div>
-        <div class="col">
-            <label for="tecnico">Técnico Principal</label>
-            <input type="text" id="tecnico">
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col">
-            <label for="acompanante">Acompañante (Opcional)</label>
-            <input type="text" id="acompanante">
-        </div>
-        <div class="col">
-            <label for="evaluador">Evaluador</label>
-            <input type="text" id="evaluador">
-        </div>
-    </div>
-
-    <h2>Evaluación</h2>
-
-    <div class="question">
-        <div class="question-title">P1: Puntualidad</div>
-        <div class="rating">
-            <label><input type="radio" name="p1" value="1">1</label>
-            <label><input type="radio" name="p1" value="2">2</label>
-            <label><input type="radio" name="p1" value="3">3</label>
-            <label><input type="radio" name="p1" value="4">4</label>
-            <label><input type="radio" name="p1" value="5">5</label>
-            <label><input type="radio" name="p1" value="6">6</label>
-            <label><input type="radio" name="p1" value="7">7</label>
-        </div>
-    </div>
-
-    <div class="question">
-        <div class="question-title">P2: Uso de EPP</div>
-        <div class="rating">
-            <label><input type="radio" name="p2" value="1">1</label>
-            <label><input type="radio" name="p2" value="2">2</label>
-            <label><input type="radio" name="p2" value="3">3</label>
-            <label><input type="radio" name="p2" value="4">4</label>
-            <label><input type="radio" name="p2" value="5">5</label>
-            <label><input type="radio" name="p2" value="6">6</label>
-            <label><input type="radio" name="p2" value="7">7</label>
-        </div>
-    </div>
-
-    <div class="question">
-        <div class="question-title">P3: Disposición</div>
-        <div class="rating">
-            <label><input type="radio" name="p3" value="1">1</label>
-            <label><input type="radio" name="p3" value="2">2</label>
-            <label><input type="radio" name="p3" value="3">3</label>
-            <label><input type="radio" name="p3" value="4">4</label>
-            <label><input type="radio" name="p3" value="5">5</label>
-            <label><input type="radio" name="p3" value="6">6</label>
-            <label><input type="radio" name="p3" value="7">7</label>
-        </div>
-    </div>
-
-    <div class="question">
-        <div class="question-title">P4: Orden y limpieza</div>
-        <div class="rating">
-            <label><input type="radio" name="p4" value="1">1</label>
-            <label><input type="radio" name="p4" value="2">2</label>
-            <label><input type="radio" name="p4" value="3">3</label>
-            <label><input type="radio" name="p4" value="4">4</label>
-            <label><input type="radio" name="p4" value="5">5</label>
-            <label><input type="radio" name="p4" value="6">6</label>
-            <label><input type="radio" name="p4" value="7">7</label>
-        </div>
-    </div>
-
-    <div class="question">
-        <div class="question-title">P5: Entrega de informe</div>
-        <div class="rating">
-            <label><input type="radio" name="p5" value="1">1</label>
-            <label><input type="radio" name="p5" value="2">2</label>
-            <label><input type="radio" name="p5" value="3">3</label>
-            <label><input type="radio" name="p5" value="4">4</label>
-            <label><input type="radio" name="p5" value="5">5</label>
-            <label><input type="radio" name="p5" value="6">6</label>
-            <label><input type="radio" name="p5" value="7">7</label>
-        </div>
-    </div>
-
-    <div class="question">
-        <div class="question-title">P6: Calidad general del servicio</div>
-        <div class="rating">
-            <label><input type="radio" name="p6" value="1">1</label>
-            <label><input type="radio" name="p6" value="2">2</label>
-            <label><input type="radio" name="p6" value="3">3</label>
-            <label><input type="radio" name="p6" value="4">4</label>
-            <label><input type="radio" name="p6" value="5">5</label>
-            <label><input type="radio" name="p6" value="6">6</label>
-            <label><input type="radio" name="p6" value="7">7</label>
-        </div>
-    </div>
-
-    <h2>Observaciones</h2>
-    <textarea id="observaciones" placeholder="Escriba aquí comentarios adicionales..."></textarea>
-
-    <h2>Firma del Evaluador</h2>
-    <div style="margin-top: 15px;">
-        <label for="nombreFirma">Nombre completo del Firmante</label>
-        <input type="text" id="nombreFirma" placeholder="Escriba su nombre y apellido para firmar el documento...">
-    </div>
-
-    <div id="resultado">
-        Promedio: -
-    </div>
-
-    <button type="button" onclick="generarPDF()">
-        GUARDAR Y GENERAR PDF
-    </button>
-</div>
-
-<script>
-    const radios = document.querySelectorAll('input[type="radio"]');
-    radios.forEach(radio => {
-        radio.addEventListener('change', calcularPromedio);
-    });
-
-    function calcularPromedio() {
-        let suma = 0;
-        let contadas = 0;
-        
-        for (let i = 1; i <= 6; i++) {
-            const seleccionada = document.querySelector(`input[name="p${i}"]:checked`);
-            if (seleccionada) {
-                suma += parseInt(seleccionada.value, 10);
-                contadas++;
-            }
-        }
-
-        const resultadoDiv = document.getElementById('resultado');
-        if (resultadoDiv) {
-            if (contadas > 0) {
-                const promedio = (suma / contadas).toFixed(1);
-                resultadoDiv.innerText = "Promedio: " + promedio;
-            } else {
-                resultadoDiv.innerText = "Promedio: -";
-            }
-        }
-    }
-
-    function generarPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        const fecha = document.getElementById('fecha').value || 'No especificada';
-        const proveedor = document.getElementById('proveedor').value || 'No especificado';
-        const equipo = document.getElementById('equipo').value || 'N/A';
-        const tecnico = document.getElementById('tecnico').value || 'N/A';
-        const acompanante = document.getElementById('acompanante').value || 'N/A';
-        const evaluador = document.getElementById('evaluador').value || 'N/A';
-        const observaciones = document.getElementById('observaciones').value || 'Sin observaciones adicionales.';
-        const nombreFirma = document.getElementById('nombreFirma').value || 'No especificado';
-
-        const cPrimario = [0, 59, 109];     
-        const cSecundario = [11, 110, 253]; 
-        const cGrisOscuro = [60, 60, 60];
-        const cGrisClaro = [240, 244, 248];
-
-        doc.setFillColor(cPrimario[0], cPrimario[1], cPrimario[2]);
-        doc.rect(0, 0, 210, 25, 'F'); 
-        
-        doc.setTextColor(255, 255, 255);
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(14);
-        doc.text("ACCESS", 14, 16);
-        doc.setFontSize(11);
-        doc.setFont("Helvetica", "normal");
-        doc.text("REGISTRO DE INSPECCIÓN MENSUAL", 196, 16, { align: "right" });
-
-        doc.setTextColor(cPrimario[0], cPrimario[1], cPrimario[2]);
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(16);
-        doc.text("EVALUACIÓN DE PROVEEDORES", 14, 40);
-
-        doc.setDrawColor(cSecundario[0], cSecundario[1], cSecundario[2]);
-        doc.setLineWidth(0.5);
-        doc.line(14, 44, 196, 44); 
-
-        doc.setFontSize(10);
-        doc.setTextColor(cGrisOscuro[0], cGrisOscuro[1], cGrisOscuro[2]);
-        
-        doc.setFont("Helvetica", "bold"); doc.text("Fecha Mantención:", 14, 54);
-        doc.setFont("Helvetica", "normal"); doc.text(fecha, 52, 54);
-        doc.setFont("Helvetica", "bold"); doc.text("Técnico Principal:", 110, 54);
-        doc.setFont("Helvetica", "normal"); doc.text(tecnico, 145, 54);
-
-        doc.setFont("Helvetica", "bold"); doc.text("Proveedor Evaluado:", 14, 62);
-        doc.setFont("Helvetica", "normal"); doc.text(proveedor, 52, 62);
-        doc.setFont("Helvetica", "bold"); doc.text("Acompañante:", 110, 62);
-        doc.setFont("Helvetica", "normal"); doc.text(acompanante, 145, 62);
-
-        doc.setFont("Helvetica", "bold"); doc.text("Equipo / Maquinaria:", 14, 70);
-        doc.setFont("Helvetica", "normal"); doc.text(equipo, 52, 70);
-        doc.setFont("Helvetica", "bold"); doc.text("Evaluador:", 110, 70);
-        doc.setFont("Helvetica", "normal"); doc.text(evaluador, 145, 70);
-
-        doc.setTextColor(cPrimario[0], cPrimario[1], cPrimario[2]);
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(12);
-        doc.text("Puntajes por Criterio (Escala 1 - 7)", 14, 85);
-
-        let yRow = 92;
-        doc.setFillColor(cPrimario[0], cPrimario[1], cPrimario[2]);
-        doc.rect(14, yRow, 182, 7, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(9);
-        doc.text("Criterio Evaluado", 18, yRow + 5);
-        doc.text("Nota", 180, yRow + 5, { align: "right" });
-        yRow += 7;
-
-        const preguntasTexto = [
-            "P1: Puntualidad",
-            "P2: Uso de EPP",
-            "P3: Disposición",
-            "P4: Orden y limpieza",
-            "P5: Entrega de informe",
-            "P6: Calidad general del servicio"
-        ];
-
-        doc.setTextColor(cGrisOscuro[0], cGrisOscuro[1], cGrisOscuro[2]);
-        preguntasTexto.forEach((texto, index) => {
-            if (index % 2 === 0) {
-                doc.setFillColor(cGrisClaro[0], cGrisClaro[1], cGrisClaro[2]);
-                doc.rect(14, yRow, 182, 8, 'F');
-            }
-            
-            const radioSel = document.querySelector(`input[name="p${index + 1}"]:checked`);
-            const nota = radioSel ? radioSel.value : 'No evaluado';
-            
-            doc.setFont("Helvetica", "normal");
-            doc.text(texto, 18, yRow + 5.5);
-            
-            doc.setFont("Helvetica", "bold");
-            if(nota !== 'No evaluado') {
-                doc.setTextColor(cSecundario[0], cSecundario[1], cSecundario[2]);
-            }
-            doc.text(nota, 180, yRow + 5.5, { align: "right" });
-            doc.setTextColor(cGrisOscuro[0], cGrisOscuro[1], cGrisOscuro[2]);
-
-            yRow += 8;
-        });
-
-        doc.setFillColor(238, 244, 255); 
-        doc.rect(14, yRow + 2, 182, 10, 'F');
-        
-        const resultadoDiv = document.getElementById('resultado');
-        const textoPromedio = resultadoDiv ? resultadoDiv.innerText : 'Promedio: -';
-        
-        doc.setTextColor(cPrimario[0], cPrimario[1], cPrimario[2]);
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(11);
-        doc.text("RESULTADO FINAL: " + textoPromedio, 18, yRow + 8.5);
-
-        yRow += 22;
-        doc.setFontSize(12);
-        doc.text("Observaciones del Inspector", 14, yRow);
-        
-        doc.setLineWidth(0.3);
-        doc.setDrawColor(200, 200, 200);
-        doc.line(14, yRow + 3, 196, yRow + 3);
-
-        doc.setFont("Helvetica", "normal");
-        doc.setFontSize(10);
-        doc.setTextColor(50, 50, 50);
-        
-        const lineasObs = doc.splitTextToSize(observaciones, 180);
-        doc.text(lineasObs, 14, yRow + 10);
-
-        const altoObservaciones = lineasObs.length * 5; 
-        let yFirma = yRow + 25 + altoObservaciones;
-
-        if (yFirma > 260) {
-            doc.addPage();
-            yFirma = 30;
-        }
-
-        doc.setDrawColor(cPrimario[0], cPrimario[1], cPrimario[2]);
-        doc.setLineWidth(0.5);
-        doc.line(14, yFirma, 90, yFirma); 
-
-        doc.setTextColor(cGrisOscuro[0], cGrisOscuro[1], cGrisOscuro[2]);
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(10);
-        doc.text("Firma de Conformidad", 14, yFirma + 5);
-        
-        doc.setFont("Helvetica", "italic");
-        doc.setFontSize(9);
-        doc.setTextColor(100, 100, 100);
-        doc.text("Resp: " + nombreFirma, 14, yFirma + 10);
-        doc.text("Validado electrónicamente vía formulario ACCESS", 14, yFirma + 14);
-
-        const nombreArchivo = proveedor.replace(/\s+/g, '_');
-        doc.save("Evaluacion_" + nombreArchivo + "_" + fecha + ".pdf");
-    }
-</script>
-
-</body>
-</html>
+// Función opcional: permite comprobar que el webhook está activo
+// visitando la URL /exec directamente en el navegador.
+function doGet(e) {
+  return ContentService
+    .createTextOutput("El webhook de Evaluación de Mantención está activo y funcionando.")
+    .setMimeType(ContentService.MimeType.TEXT);
+}
